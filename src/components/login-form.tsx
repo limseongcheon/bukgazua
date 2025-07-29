@@ -58,7 +58,7 @@ export default function LoginForm() {
         <form action={formAction} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="username">아이디</Label>
-            <Input id="username" name="username" required defaultValue="admin" />
+            <Input id="username" name="username" required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">비밀번호</Label>
@@ -69,7 +69,6 @@ export default function LoginForm() {
                 type={showPassword ? 'text' : 'password'}
                 required
                 className="pr-10"
-                defaultValue="password"
               />
               <Button
                 type="button"
