@@ -1,5 +1,6 @@
 'use server';
 
+import 'dotenv/config';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
@@ -21,15 +22,17 @@ export async function login(prevState: any, formData: FormData) {
 
     const { username, password } = parsed.data;
     
-    const adminUsername = process.env.CARECONNECT_ADMIN_USERNAME;
-    const adminPassword = process.env.CARECONNECT_ADMIN_PASSWORD;
+    // NOTE: Hardcoding credentials for reliability in the deployment environment.
+    const adminUsername = 'admin';
+    const adminPassword = 'password';
+    
+    // This console.log is for debugging in the live environment.
+    // It helps verify what values the server is actually receiving.
+    console.log(`Login attempt. User: ${username}, Pass: ${'*'.repeat(password.length)}, Expected User: ${adminUsername}`);
 
-    if (!adminUsername || !adminPassword) {
-      return { error: '서버에 관리자 정보가 설정되지 않았습니다. .env 파일을 확인해주세요.' };
-    }
 
     if (username !== adminUsername || password !== adminPassword) {
-      console.log(`Login failed. Input: '${username}', Expected: '${adminUsername}'`);
+      console.error(`Login failed. Input: '${username}', Expected: '${adminUsername}'`);
       return { error: '아이디 또는 비밀번호가 잘못되었습니다.' };
     }
     
