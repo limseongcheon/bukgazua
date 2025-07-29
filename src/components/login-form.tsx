@@ -20,12 +20,19 @@ function SubmitButton() {
 }
 
 export default function LoginForm() {
+  // The state now can be { error: string } or { success: true }
   const [state, formAction] = useActionState(login, undefined);
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
-    if (state?.error) {
+    if (!state) return;
+
+    if (state.success) {
+      // On success, redirect the user using client-side navigation.
+      // This is the most reliable way to handle redirection after a server action.
+      window.location.href = '/admin';
+    } else if (state.error) {
       toast({
         variant: 'destructive',
         title: '로그인 실패',

@@ -1,6 +1,5 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 
@@ -9,7 +8,13 @@ const schema = z.object({
   password: z.string().min(1, "비밀번호를 입력해주세요."),
 });
 
-export async function login(prevState: any, formData: FormData) {
+// Define a clear return type for the server action
+type LoginState = {
+  success?: boolean;
+  error?: string;
+};
+
+export async function login(prevState: any, formData: FormData): Promise<LoginState> {
   try {
     const parsed = schema.safeParse(Object.fromEntries(formData));
 
@@ -21,7 +26,8 @@ export async function login(prevState: any, formData: FormData) {
 
     const { username, password } = parsed.data;
     
-    // 환경 변수 대신 값을 직접 하드코딩합니다.
+    // Using hardcoded credentials for stability.
+    // In a real app, these would come from Firebase Secret Manager.
     const adminUsername = 'admin';
     const adminPassword = 'password';
 
@@ -30,7 +36,6 @@ export async function login(prevState: any, formData: FormData) {
       return { error: '아이디 또는 비밀번호가 잘못되었습니다.' };
     }
     
-    // 로그인 성공 시 쿠키 설정
     cookies().set({
         name: 'session',
         value: 'admin-logged-in',
@@ -40,25 +45,23 @@ export async function login(prevState: any, formData: FormData) {
         maxAge: 60 * 60 * 24, // 1 day
     });
 
+    // Instead of calling redirect(), return a success state.
+    // The client will handle the redirection.
+    return { success: true };
+
   } catch (error) {
     console.error('Login action failed:', error);
-    if (error instanceof Error && error.message.includes('cookies')) {
-        return { error: '세션 설정에 실패했습니다. 서버 환경을 확인해주세요.'};
-    }
-    return { error: '로그인 중 알 수 없는 오류가 발생했습니다.' };
+    return { error: '로그인 중 알 수 없는 서버 오류가 발생했습니다.' };
   }
-  
-  // 모든 로직이 성공적으로 끝나면 /admin으로 리디렉션합니다.
-  redirect('/admin');
 }
 
 export async function logout() {
   try {
-    // 로그아웃 시 쿠키 삭제
     cookies().delete('session');
   } catch(error) {
      console.error('Logout failed:', error);
   }
-  // 로그인 페이지로 리디렉션
+  // This redirect on logout is safe and standard.
+  const { redirect } = await import('next/navigation');
   redirect('/login');
 }
