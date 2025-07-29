@@ -1,7 +1,7 @@
 {
   "/_not-found/page": "/_not-found",
-  "/api/caregivers/route": "/api/caregivers",
   "/favicon.ico/route": "/favicon.ico",
+  "/api/caregivers/route": "/api/caregivers",
   "/admin/page": "/admin",
   "/inquiry/page": "/inquiry",
   "/insurance-claim/page": "/insurance-claim",
