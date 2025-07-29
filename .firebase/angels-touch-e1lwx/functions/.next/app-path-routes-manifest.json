@@ -1,0 +1,11 @@
+{
+  "/api/caregivers/route": "/api/caregivers",
+  "/favicon.ico/route": "/favicon.ico",
+  "/_not-found/page": "/_not-found",
+  "/admin/page": "/admin",
+  "/inquiry/page": "/inquiry",
+  "/insurance-claim/page": "/insurance-claim",
+  "/login/page": "/login",
+  "/page": "/",
+  "/support/page": "/support"
+}
