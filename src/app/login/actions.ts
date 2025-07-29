@@ -1,3 +1,4 @@
+
 'use server';
 
 import 'dotenv/config'; // .env 파일을 명시적으로 로드합니다.
@@ -22,13 +23,11 @@ export async function login(prevState: any, formData: FormData) {
 
     const { username, password } = parsed.data;
     
-    // Firebase Secret Manager 또는 로컬 .env 파일에서 환경 변수를 읽어옵니다.
-    // 이 방식은 안전하고 유연합니다.
     const adminUsername = process.env.CARECONNECT_ADMIN_USERNAME;
     const adminPassword = process.env.CARECONNECT_ADMIN_PASSWORD;
 
     if (!adminUsername || !adminPassword) {
-      return { error: '서버에 관리자 정보가 설정되지 않았습니다. 관리자에게 문의해주세요.' };
+      return { error: '서버에 관리자 정보가 설정되지 않았습니다. .env 파일을 확인해주세요.' };
     }
 
     if (username !== adminUsername || password !== adminPassword) {
@@ -59,4 +58,8 @@ export async function login(prevState: any, formData: FormData) {
 export async function logout() {
   try {
     cookies().delete('session');
-  } catch(error)
+  } catch(error) {
+     console.error('Logout failed:', error);
+  }
+  redirect('/login');
+}
