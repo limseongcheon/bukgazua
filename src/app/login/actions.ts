@@ -21,6 +21,7 @@ export async function login(prevState: any, formData: FormData) {
 
     const { username, password } = parsed.data;
     
+    // 환경 변수 대신 값을 직접 하드코딩합니다.
     const adminUsername = 'admin';
     const adminPassword = 'password';
 
@@ -29,6 +30,7 @@ export async function login(prevState: any, formData: FormData) {
       return { error: '아이디 또는 비밀번호가 잘못되었습니다.' };
     }
     
+    // 로그인 성공 시 쿠키 설정
     cookies().set({
         name: 'session',
         value: 'admin-logged-in',
@@ -45,15 +47,18 @@ export async function login(prevState: any, formData: FormData) {
     }
     return { error: '로그인 중 알 수 없는 오류가 발생했습니다.' };
   }
-  // This must be called outside of the try/catch block.
+  
+  // 모든 로직이 성공적으로 끝나면 /admin으로 리디렉션합니다.
   redirect('/admin');
 }
 
 export async function logout() {
   try {
+    // 로그아웃 시 쿠키 삭제
     cookies().delete('session');
   } catch(error) {
      console.error('Logout failed:', error);
   }
+  // 로그인 페이지로 리디렉션
   redirect('/login');
 }
