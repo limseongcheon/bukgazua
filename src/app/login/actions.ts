@@ -1,6 +1,5 @@
 'use server';
 
-import 'dotenv/config'; // .env 파일을 명시적으로 로드합니다.
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
