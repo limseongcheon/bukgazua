@@ -1,0 +1,35 @@
+[debug] [2025-07-29T13:34:36.843Z] ----------------------------------------------------------------------
+[debug] [2025-07-29T13:34:36.846Z] Command:       /nix/store/ws50yvm6vzlzf7jzz6n7xh4szddrack1-nodejs-20.19.1/bin/node /nix/store/gv0i9ndcpzjpfi2yr06402kzy90q51ki-firebase-tools-14.10.1/lib/node_modules/firebase-tools/lib/bin/firebase.js deploy
+[debug] [2025-07-29T13:34:36.847Z] CLI Version:   14.10.1
+[debug] [2025-07-29T13:34:36.847Z] Platform:      linux
+[debug] [2025-07-29T13:34:36.847Z] Node Version:  v20.19.1
+[debug] [2025-07-29T13:34:36.847Z] Time:          Tue Jul 29 2025 13:34:36 GMT+0000 (Coordinated Universal Time)
+[debug] [2025-07-29T13:34:36.848Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-07-29T13:34:36.850Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2025-07-29T13:34:37.390Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-29T13:34:37.733Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2025-07-29T13:34:37.735Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2025-07-29T13:35:02.165Z] Running auto auth
+[debug] [2025-07-29T13:35:02.197Z] [iam] checking project default for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2025-07-29T13:35:02.200Z] No OAuth tokens found
+[debug] [2025-07-29T13:35:02.200Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/default:testIamPermissions [none]
+[debug] [2025-07-29T13:35:02.200Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/default:testIamPermissions x-goog-quota-user=projects/default
+[debug] [2025-07-29T13:35:02.200Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/default:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-07-29T13:35:03.081Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/default:testIamPermissions 200
+[debug] [2025-07-29T13:35:03.082Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/default:testIamPermissions {}
+[debug] [2025-07-29T13:35:03.082Z] [iam] error while checking permissions, command may fail: Authorization failed. This account is missing the following required permissions on project default:
+
+  firebase.projects.get
+  firebasehosting.sites.update
+[debug] [2025-07-29T13:35:03.084Z] No OAuth tokens found
+[debug] [2025-07-29T13:35:03.085Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/default [none]
+[debug] [2025-07-29T13:35:03.585Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/default 403
+[debug] [2025-07-29T13:35:03.586Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/default {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2025-07-29T13:35:03.587Z] Request to https://firebase.googleapis.com/v1beta1/projects/default had HTTP Error: 403, The caller does not have permission
+[debug] [2025-07-29T13:35:03.588Z] FirebaseError: Request to https://firebase.googleapis.com/v1beta1/projects/default had HTTP Error: 403, The caller does not have permission
+    at responseToError (/nix/store/gv0i9ndcpzjpfi2yr06402kzy90q51ki-firebase-tools-14.10.1/lib/node_modules/firebase-tools/lib/responseToError.js:52:12)
+    at RetryOperation._fn (/nix/store/gv0i9ndcpzjpfi2yr06402kzy90q51ki-firebase-tools-14.10.1/lib/node_modules/firebase-tools/lib/apiv2.js:312:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[error] 
+[error] Error: Failed to get Firebase project default. Please make sure the project exists and your account has permission to access it.
