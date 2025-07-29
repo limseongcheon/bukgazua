@@ -4,23 +4,22 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   const sessionCookie = request.cookies.get('session');
 
-  // If the user is trying to access any admin page and there's no session cookie,
-  // redirect them to the login page.
+  // 사용자가 '/admin'으로 시작하는 경로에 접근하려고 하고, 세션 쿠키가 없는 경우,
+  // 로그인 페이지로 리디렉션합니다.
   if (!sessionCookie) {
-    // '/login' 페이지 자체로의 접근은 허용해야 무한 리다이렉션을 피할 수 있습니다.
-    if (request.nextUrl.pathname.startsWith('/admin')) {
-        const loginUrl = new URL('/login', request.url);
-        loginUrl.searchParams.set('from', request.nextUrl.pathname);
-        return NextResponse.redirect(loginUrl);
-    }
+    const loginUrl = new URL('/login', request.url);
+    // 원래 가려던 경로를 'from' 쿼리 파라미터로 추가하여 로그인 후 돌아갈 수 있도록 합니다.
+    loginUrl.searchParams.set('from', request.nextUrl.pathname);
+    return NextResponse.redirect(loginUrl);
   }
-
-  // If there is a session cookie, let them proceed.
-  // In a real app, you'd want to verify the session token here.
+  
+  // 세션 쿠키가 있는 경우, 요청을 그대로 진행합니다.
+  // 실제 앱에서는 여기서 세션 토큰의 유효성을 검증해야 합니다.
   return NextResponse.next();
 }
 
-// matcher를 수정하여 /admin 경로에만 미들웨어가 적용되도록 합니다.
+// 미들웨어가 적용될 경로를 명시적으로 지정합니다.
+// '/admin'과 그 하위 모든 경로에만 이 미들웨어가 실행됩니다.
 export const config = {
   matcher: '/admin/:path*',
 };
