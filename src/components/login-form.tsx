@@ -2,7 +2,6 @@
 
 import { useActionState, useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { useRouter } from 'next/navigation';
 import { login } from '@/app/login/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -21,32 +20,19 @@ function SubmitButton() {
 }
 
 export default function LoginForm() {
-  const router = useRouter();
-  const { toast } = useToast();
-  
-  // 초기 상태를 명확하게 정의합니다.
-  const [state, formAction] = useActionState(login, { success: false, message: '' });
+  const [state, formAction] = useActionState(login, undefined);
   const [showPassword, setShowPassword] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
-    // 액션 결과에 따라 토스트를 보여주거나 페이지를 이동합니다.
-    if (state.message) {
-      if (state.success) {
-        toast({
-          title: '로그인 성공',
-          description: '관리자 페이지로 이동합니다.',
-        });
-        // 로그인 성공 시 클라이언트 측에서 페이지 이동
-        router.push('/admin');
-      } else {
-        toast({
-          variant: 'destructive',
-          title: '로그인 실패',
-          description: state.message,
-        });
-      }
+    if (state?.error) {
+      toast({
+        variant: 'destructive',
+        title: '로그인 실패',
+        description: state.error,
+      });
     }
-  }, [state, router, toast]);
+  }, [state, toast]);
 
   return (
     <Card className="w-full max-w-sm">
