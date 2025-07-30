@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { subDays, format } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -11,27 +11,40 @@ interface Claim {
   date: string;
 }
 
-// Pre-defined static data to avoid client-side computation and hydration errors.
-const staticClaims: Claim[] = [
-  { name: '김O민님', claimType: '병원 간병비', date: format(subDays(new Date(), 1), 'MM.dd', { locale: ko }) },
-  { name: '이O서님', claimType: '가족 간병비', date: format(subDays(new Date(), 1), 'MM.dd', { locale: ko }) },
-  { name: '박O준님', claimType: '병원 간병비', date: format(subDays(new Date(), 2), 'MM.dd', { locale: ko }) },
-  { name: '최O윤님', claimType: '가족 간병비', date: format(subDays(new Date(), 2), 'MM.dd', { locale: ko }) },
-  { name: '정O아님', claimType: '병원 간병비', date: format(subDays(new Date(), 3), 'MM.dd', { locale: ko }) },
-  { name: '강O진님', claimType: '가족 간병비', date: format(subDays(new Date(), 3), 'MM.dd', { locale: ko }) },
-  { name: '조O현님', claimType: '병원 간병비', date: format(subDays(new Date(), 4), 'MM.dd', { locale: ko }) },
-  { name: '윤O솔님', claimType: '가족 간병비', date: format(subDays(new Date(), 4), 'MM.dd', { locale: ko }) },
-  { name: '장O호님', claimType: '병원 간병비', date: format(subDays(new Date(), 5), 'MM.dd', { locale: ko }) },
-  { name: '임O연님', claimType: '가족 간병비', date: format(subDays(new Date(), 5), 'MM.dd', { locale: ko }) },
-  { name: '한O우님', claimType: '병원 간병비', date: format(subDays(new Date(), 6), 'MM.dd', { locale: ko }) },
-  { name: '오O서님', claimType: '가족 간병비', date: format(subDays(new Date(), 6), 'MM.dd', { locale: ko }) },
-];
+const names = ['김O민', '이O서', '박O준', '최O윤', '정O아', '강O진', '조O현', '윤O솔', '장O호', '임O연'];
+const claimTypes = ['병원 간병비', '가족 간병비'];
+
+// Hydration 오류를 막기 위해 정적 데이터 생성
+const generateStaticClaims = (): Claim[] => {
+  const today = new Date();
+  const claims: Claim[] = [];
+  for (let i = 0; i < 20; i++) {
+    const name = names[i % names.length];
+    const claimType = claimTypes[i % claimTypes.length];
+    const date = format(subDays(today, i % 5), 'MM.dd', { locale: ko });
+    claims.push({ name: `${name}님`, claimType, date });
+  }
+  return claims;
+};
+
+const staticClaims = generateStaticClaims();
 
 
 export default function RecentClaims() {
-  const [claims, setClaims] = useState<Claim[]>(staticClaims);
+  const [claims, setClaims] = useState<Claim[]>([]);
 
-  // Duplicate the list for a seamless loop
+  useEffect(() => {
+    // 클라이언트에서만 실행되어야 하는 부작용을 방지하기 위해
+    // 정적 데이터를 상태에 설정합니다.
+    setClaims(staticClaims);
+  }, []);
+
+  if (claims.length === 0) {
+    // 초기 렌더링 시나 데이터가 없을 때 아무것도 렌더링하지 않음
+    return null; 
+  }
+
+  // 원활한 반복을 위해 목록을 복제합니다.
   const displayClaims = [...claims, ...claims];
 
   return (

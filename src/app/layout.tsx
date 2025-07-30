@@ -3,13 +3,19 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
-import { PT_Sans } from 'next/font/google';
+import { PT_Sans, Gowun_Dodum } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
 const ptSans = PT_Sans({
   subsets: ['latin'],
   weight: ['400', '700'],
   variable: '--font-sans',
+});
+
+const gowunDodum = Gowun_Dodum({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-headline',
 });
 
 export const metadata: Metadata = {
@@ -27,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <body className={cn("antialiased", ptSans.variable)}>
+      <body className={cn("antialiased", ptSans.variable, gowunDodum.variable)}>
         <div className="flex flex-col min-h-screen">
           <Header />
           <main className="flex-grow">{children}</main>
