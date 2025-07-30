@@ -22,7 +22,6 @@ export async function login(prevState: any, formData: FormData) {
 
     const { username, password } = parsed.data;
     
-    // .env 파일에서 직접 환경 변수를 읽어옵니다.
     const adminUsername = process.env.CARECONNECT_ADMIN_USERNAME;
     const adminPassword = process.env.CARECONNECT_ADMIN_PASSWORD;
 
@@ -51,8 +50,7 @@ export async function login(prevState: any, formData: FormData) {
     }
     return { error: '로그인 중 알 수 없는 오류가 발생했습니다.' };
   }
-  
-  // 성공 시 /admin으로 리디렉션
+  // This must be called outside of the try/catch block.
   redirect('/admin');
 }
 
