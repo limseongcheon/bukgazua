@@ -81,7 +81,7 @@ const CaregiverForm = React.memo(({ onSuccess }: { onSuccess: (newCaregiver: Car
         if (result.success && result.newCaregiver) {
             toast({
                 title: '성공',
-                description: `'${'${'}result.newCaregiver.name}' 님이 성공적으로 등록되었습니다.`,
+                description: `'${result.newCaregiver.name}' 님이 성공적으로 등록되었습니다.`,
             });
             formRef.current?.reset();
             setBirthDate(undefined);

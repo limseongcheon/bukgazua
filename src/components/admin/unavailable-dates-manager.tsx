@@ -59,13 +59,13 @@ const UnavailableDatesManager = React.memo(({ caregiver, onEditSuccess }: { care
         
         // Send update to server
         updateDatesOnServer(Array.from(newUnavailableStrings));
-    }, [unavailableDateStrings, caregiver.id, onEditSuccess, toast]);
+    }, [unavailableDateStrings]);
 
     const handleClearDates = useCallback(() => {
         setUnavailableDateStrings(new Set());
         updateDatesOnServer([]);
         lastSelectedDay.current = null;
-    }, [updateDatesOnServer]);
+    }, []);
     
     const updateDatesOnServer = useCallback(async (datesAsStrings: string[]) => {
         setIsLoading(true);
@@ -104,7 +104,7 @@ const UnavailableDatesManager = React.memo(({ caregiver, onEditSuccess }: { care
                     {isLoading ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
-                        unavailableDates.length > 0 ? `${'${'}unavailableDates.length}일 선택됨` : '날짜 선택'
+                        unavailableDates.length > 0 ? `${unavailableDates.length}일 선택됨` : '날짜 선택'
                     )}
                 </Button>
             </PopoverTrigger>
