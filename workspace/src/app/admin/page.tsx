@@ -1,6 +1,5 @@
-// Force re-commit
 'use client';
-
+// Force re-commit by adding this comment
 import { useEffect, useState, useMemo, useRef, FormEvent, useCallback } from 'react';
 import React from 'react';
 import Image from 'next/image';
