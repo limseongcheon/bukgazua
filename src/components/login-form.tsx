@@ -25,13 +25,7 @@ export default function LoginForm() {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!state) return;
-
-    if (state.success) {
-      // On success, redirect the user using client-side navigation.
-      // This is the most reliable way to handle redirection.
-      window.location.href = '/admin';
-    } else if (state.error) {
+    if (state?.error) {
       toast({
         variant: 'destructive',
         title: '로그인 실패',
