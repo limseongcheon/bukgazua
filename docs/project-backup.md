@@ -1,4 +1,4 @@
-# 프로젝트 코드 백업 (2025-07-29)
+# 프로젝트 코드 백업 (2025-07-28)
 
 이 파일은 프로젝트의 모든 주요 소스 코드를 담고 있는 백업입니다.
 오류 발생 시 이 파일의 내용을 참조하여 이전의 안정적인 상태로 복원할 수 있습니다.
@@ -61,7 +61,7 @@ export default nextConfig;
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 9002",
     "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
     "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
     "build": "next build",
@@ -103,6 +103,7 @@ export default nextConfig;
     "genkit": "^1.13.0",
     "lucide-react": "^0.475.0",
     "next": "15.3.3",
+    "patch-package": "^8.0.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
@@ -113,8 +114,11 @@ export default nextConfig;
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
     "@types/node": "^20",
     "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/sqlite3": "^3.1.11",
     "genkit-cli": "^1.13.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
@@ -129,26 +133,26 @@ export default nextConfig;
 
 ```ts
 import type {Config} from 'tailwindcss';
-import {fontFamily} from 'tailwindcss/defaultTheme';
+import { fontFamily } from "tailwindcss/defaultTheme"
 
-const config = {
+export default {
   darkMode: ['class'],
   content: [
-    './src/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  prefix: '',
   theme: {
     container: {
       center: true,
-      padding: '2rem',
+      padding: "2rem",
       screens: {
-        '2xl': '1400px',
+        "2xl": "1400px",
       },
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-sans)', 'sans-serif'],
-        headline: ['var(--font-headline)', 'sans-serif'],
+        sans: ["var(--font-sans)", ...fontFamily.sans],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -196,30 +200,36 @@ const config = {
       },
       keyframes: {
         'accordion-down': {
-          from: {height: '0'},
-          to: {height: 'var(--radix-accordion-content-height)'},
+          from: {
+            height: '0',
+          },
+          to: {
+            height: 'var(--radix-accordion-content-height)',
+          },
         },
         'accordion-up': {
-          from: {height: 'var(--radix-accordion-content-height)'},
-          to: {height: '0'},
+          from: {
+            height: 'var(--radix-accordion-content-height)',
+          },
+          to: {
+            height: '0',
+          },
         },
         'marquee-normal': {
-          '0%': {transform: 'translateX(0)'},
-          '100%': {transform: 'translateX(-50%)'},
+            '0%': { transform: 'translateX(0)' },
+            '100%': { transform: 'translateX(-50%)' },
         },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'marquee-normal': 'marquee-normal 160s linear infinite',
-        pause: 'running paused',
+        'pause': 'running paused',
       },
     },
   },
   plugins: [require('tailwindcss-animate')],
 } satisfies Config;
-
-export default config;
 ```
 
 ---
@@ -1340,7 +1350,7 @@ export default function InsuranceClaimPage() {
 
 ```tsx
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
@@ -1348,11 +1358,11 @@ import { AppLogo } from '@/components/layout/app-logo';
 
 export default function Header() {
   const navItems = [
-    { href: '/#services', label: '서비스', className: "border-accent text-foreground hover:bg-accent hover:text-accent-foreground" },
-    { href: '/#find-caregiver', label: '간병인 찾기', className: "border-accent text-foreground hover:bg-accent hover:text-accent-foreground" },
-    { href: '/insurance-claim', label: '보험서류 청구', className: "border-accent text-foreground hover:bg-accent hover:text-accent-foreground" },
-    { href: '/inquiry', label: '일반 문의', className: "border-accent text-foreground hover:bg-accent hover:text-accent-foreground" },
-    { href: '/support', label: '간병인 지원', className: "border-destructive text-black hover:bg-destructive hover:text-destructive-foreground" },
+    { href: '/#services', label: '서비스', variant: 'outline' as const, className: 'border-accent text-foreground hover:bg-accent hover:text-accent-foreground' },
+    { href: '/#find-caregiver', label: '간병인 찾기', variant: 'outline' as const, className: 'border-accent text-foreground hover:bg-accent hover:text-accent-foreground' },
+    { href: '/insurance-claim', label: '보험서류 청구', variant: 'outline' as const, className: 'border-accent text-foreground hover:bg-accent hover:text-accent-foreground' },
+    { href: '/inquiry', label: '일반 문의', variant: 'outline' as const, className: 'border-accent text-foreground hover:bg-accent hover:text-accent-foreground' },
+    { href: '/support', label: '간병인 지원', variant: 'outline' as const, className: 'border-destructive hover:bg-destructive hover:text-destructive-foreground' },
   ];
 
   return (
@@ -1362,11 +1372,7 @@ export default function Header() {
         
         <nav className="hidden md:flex items-center gap-1">
           {navItems.map((item) => (
-            <Button asChild 
-              variant="outline"
-              className={item.className}
-              key={item.href + item.label}
-            >
+            <Button asChild variant={item.variant} className={item.className} key={item.href + item.label}>
               <Link href={item.href}>{item.label}</Link>
             </Button>
           ))}
@@ -1393,7 +1399,10 @@ export default function Header() {
                     <SheetClose asChild key={item.href + item.label}>
                       <Link
                         href={item.href}
-                        className={cn("inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-muted hover:text-muted-foreground h-10 px-4 py-2", "justify-start text-base", item.className)}
+                        className={cn(
+                            buttonVariants({ variant: item.variant, className: item.className }),
+                            "justify-start text-base"
+                        )}
                         >
                         {item.label}
                       </Link>
@@ -1498,1342 +1507,6 @@ export const AppLogo = ({ className }: AppLogoProps) => {
 
 ---
 
-## src/app/admin/page.tsx
-
-```tsx
-'use client';
-
-import { useEffect, useState, useMemo, useRef, FormEvent, useCallback } from 'react';
-import React from 'react';
-import Image from 'next/image';
-import { format, addDays, differenceInDays, startOfDay } from 'date-fns';
-import { ko } from 'date-fns/locale';
-import type { Caregiver } from '@/types/caregiver-types';
-import { Button, buttonVariants } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Textarea } from '@/components/ui/textarea';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
-import LogoutButton from '@/components/admin/logout-button';
-import { useToast } from '@/hooks/use-toast';
-import { Loader2, Calendar as CalendarIcon, Trash2, Pencil, X, Info, Search } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Checkbox } from '@/components/ui/checkbox';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import CaregiverStatusSelect from '@/components/admin/caregiver-status-select';
-
-
-// CaregiverForm component handles adding new caregivers.
-const CaregiverForm = React.memo(({ onSuccess }: { onSuccess: (newCaregiver: Caregiver) => void }) => {
-  const { toast } = useToast();
-  const formRef = useRef<HTMLFormElement>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string | undefined>>({});
-  const [birthDate, setBirthDate] = useState<Date | undefined>();
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const experiences = useMemo(() => ['신입', ...Array.from({ length: 9 }, (_, i) => `${i + 1}년`), '10년 이상'], []);
-
-  const validateForm = (formData: FormData) => {
-    const newErrors: Record<string, string | undefined> = {};
-    if (!formData.get('name')) newErrors.name = "이름은 필수입니다.";
-    if (!formData.get('phone')) newErrors.phone = "전화번호는 필수입니다.";
-    if (!birthDate) newErrors.birthDate = "생년월일은 필수입니다.";
-    if (!formData.get('gender')) newErrors.gender = "성별은 필수입니다.";
-    if (!formData.get('experience')) newErrors.experience = "경력은 필수입니다.";
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setErrors({});
-    const formData = new FormData(event.currentTarget);
-
-    if (!validateForm(formData)) {
-        toast({
-            variant: "destructive",
-            title: "입력 오류",
-            description: "필수 항목을 모두 입력해주세요.",
-        });
-        return;
-    }
-
-    setIsSubmitting(true);
-
-    const data = {
-        name: formData.get('name') as string,
-        phone: formData.get('phone') as string,
-        photoUrl: formData.get('photoUrl') as string,
-        birthDate: birthDate ? format(birthDate, 'yyyy-MM-dd') : undefined,
-        gender: formData.get('gender') as '남성' | '여성' | null,
-        certifications: formData.get('certifications') as string,
-        experience: formData.get('experience') as string,
-        specialNotes: formData.get('specialNotes') as string,
-    };
-
-    try {
-        const response = await fetch('/api/caregivers', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-            throw new Error(result.error || '서버에서 오류가 발생했습니다.');
-        }
-
-        if (result.success && result.newCaregiver) {
-            toast({
-                title: '성공',
-                description: `'${result.newCaregiver.name}' 님이 성공적으로 등록되었습니다.`,
-            });
-            formRef.current?.reset();
-            setBirthDate(undefined);
-            setErrors({});
-            onSuccess(result.newCaregiver);
-        } else {
-            throw new Error(result.error || '알 수 없는 오류가 발생했습니다.');
-        }
-    } catch (err: any) {
-        const errorMessage = err.message || '서버 응답이 올바르지 않습니다. 다시 시도해주세요.';
-        setErrors({ form: errorMessage });
-        toast({
-            variant: 'destructive',
-            title: '오류',
-            description: errorMessage,
-        });
-    } finally {
-        setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <div className="max-w-2xl mx-auto">
-        <form onSubmit={handleSubmit} ref={formRef} noValidate>
-        <Card>
-            <CardHeader>
-                <CardTitle>새 간병인 등록</CardTitle>
-                <CardDescription>아래 양식을 작성하여 새 간병인을 시스템에 추가합니다.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="name">이름<span className="text-destructive">*</span></Label>
-                        <Input id="name" name="name" placeholder="홍길동" disabled={isSubmitting} />
-                        {errors.name && <p className="text-sm font-medium text-destructive">{errors.name}</p>}
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="phone">전화번호<span className="text-destructive">*</span></Label>
-                        <Input id="phone" name="phone" placeholder="(-) 없이 숫자만 입력" disabled={isSubmitting} />
-                        {errors.phone && <p className="text-sm font-medium text-destructive">{errors.phone}</p>}
-                    </div>
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="photoUrl">사진 URL (선택)</Label>
-                    <Input id="photoUrl" name="photoUrl" placeholder="https://i.imgur.com/OSsWUN6.jpg" disabled={isSubmitting} />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="birthDate">생년월일<span className="text-destructive">*</span></Label>
-                         <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full justify-start text-left font-normal",
-                                  !birthDate && "text-muted-foreground",
-                                  errors.birthDate && "border-destructive"
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {birthDate ? format(birthDate, "PPP", { locale: ko }) : <span>날짜 선택</span>}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                              <Calendar
-                                mode="single"
-                                selected={birthDate}
-                                onSelect={(date) => {
-                                  setBirthDate(date || undefined);
-                                  setIsCalendarOpen(false);
-                                }}
-                                captionLayout="dropdown-buttons"
-                                fromYear={1940}
-                                toYear={new Date().getFullYear()}
-                                disabled={(date) =>
-                                  date > new Date() || date < new Date("1940-01-01")
-                                }
-                                initialFocus
-                                locale={ko}
-                              />
-                            </PopoverContent>
-                          </Popover>
-                          {errors.birthDate && <p className="text-sm font-medium text-destructive">{errors.birthDate}</p>}
-                    </div>
-                     <div className="space-y-2">
-                        <Label htmlFor="gender">성별<span className="text-destructive">*</span></Label>
-                        <Select name="gender" disabled={isSubmitting}>
-                            <SelectTrigger className={cn(errors.gender && "border-destructive")}>
-                                <SelectValue placeholder="성별 선택" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="남성">남성</SelectItem>
-                                <SelectItem value="여성">여성</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        {errors.gender && <p className="text-sm font-medium text-destructive">{errors.gender}</p>}
-                    </div>
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="certifications">보유 자격증 (쉼표로 구분)</Label>
-                    <Input id="certifications" name="certifications" placeholder="예: 요양보호사 1급, 간호조무사" disabled={isSubmitting} />
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="experience">경력<span className="text-destructive">*</span></Label>
-                    <Select name="experience" disabled={isSubmitting}>
-                        <SelectTrigger className={cn(errors.experience && "border-destructive")}>
-                            <SelectValue placeholder="경력 선택" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {experiences.map(exp => <SelectItem key={exp} value={exp}>{exp}</SelectItem>)}
-                        </SelectContent>
-                    </Select>
-                    {errors.experience && <p className="text-sm font-medium text-destructive">{errors.experience}</p>}
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="specialNotes">특기사항 (선택)</Label>
-                    <Textarea id="specialNotes" name="specialNotes" placeholder="예: 치매 환자 돌봄 경험 풍부, 요리 가능" disabled={isSubmitting} />
-                </div>
-
-                {errors.form && <p className="text-sm font-medium text-destructive">{errors.form}</p>}
-                
-                <Button type="submit" disabled={isSubmitting} className="w-full" size="lg">
-                    {isSubmitting ? (
-                    <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        등록 중...
-                    </>
-                    ) : (
-                    '간병인 추가'
-                    )}
-                </Button>
-            </CardContent>
-        </Card>
-        </form>
-    </div>
-  );
-});
-CaregiverForm.displayName = 'CaregiverForm';
-
-const ActionToolbar = React.memo(({ selectedCount, isDeleting, onDelete }: { selectedCount: number, isDeleting: boolean, onDelete: () => void }) => {
-  if (selectedCount === 0) return null;
-
-  return (
-    <div className="bg-muted p-2 rounded-md mb-4 flex items-center justify-between transition-all duration-300">
-       <span className="text-sm font-medium text-muted-foreground">{selectedCount}명 선택됨</span>
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button 
-            variant="destructive" 
-            disabled={isDeleting}
-            size="sm"
-          >
-            {isDeleting ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Trash2 className="mr-2 h-4 w-4" />
-            )}
-            선택 항목 삭제
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>정말로 삭제하시겠습니까?</AlertDialogTitle>
-            <AlertDialogDescription>
-              선택한 {selectedCount}명의 간병인 정보가 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>취소</AlertDialogCancel>
-            <AlertDialogAction onClick={onDelete} className={buttonVariants({ variant: "destructive" })}>
-              삭제
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
-  );
-});
-ActionToolbar.displayName = 'ActionToolbar';
-
-// This component defines the scroll behavior.
-const CaregiverTable = React.memo(({ 
-    caregivers, 
-    selectedRowIds,
-    isDeleting,
-    onSelectAll,
-    onSelectRow,
-    onDeleteSelected,
-    onEditSuccess,
-    onEditRequest
-}: { 
-    caregivers: Caregiver[]; 
-    selectedRowIds: number[];
-    isDeleting: boolean;
-    onSelectAll: (checked: boolean | string) => void;
-    onSelectRow: (id: number, checked: boolean | string) => void;
-    onDeleteSelected: () => void;
-    onEditSuccess: (updatedCaregiver: Caregiver) => void;
-    onEditRequest: (caregiver: Caregiver) => void;
-}) => {
-    if (!caregivers || caregivers.length === 0) {
-        return <div className="text-center py-10 text-muted-foreground">일치하는 간병인이 없습니다.</div>;
-    }
-
-    return (
-        <TooltipProvider>
-            <div className="space-y-4">
-              <ActionToolbar selectedCount={selectedRowIds.length} isDeleting={isDeleting} onDelete={onDeleteSelected} />
-              <div className="relative max-h-[70vh] overflow-auto">
-                <Table>
-                  <TableHeader className="sticky top-0 z-20 bg-secondary">
-                    <TableRow>
-                      <TableHead className="w-[50px] sticky left-0 bg-secondary z-10">
-                          <Checkbox 
-                              onCheckedChange={onSelectAll}
-                              checked={selectedRowIds.length === caregivers.length && caregivers.length > 0}
-                              aria-label="모두 선택"
-                          />
-                      </TableHead>
-                      <TableHead className="min-w-[70px]">사진</TableHead>
-                      <TableHead className="min-w-[120px] sticky left-[50px] bg-secondary z-10">이름</TableHead>
-                      <TableHead className="min-w-[150px]">연락처</TableHead>
-                      <TableHead className="min-w-[120px]">생년월일</TableHead>
-                      <TableHead className="min-w-[80px]">성별</TableHead>
-                      <TableHead className="min-w-[150px] text-center">상태</TableHead>
-                      <TableHead className="min-w-[200px]">자격증</TableHead>
-                      <TableHead className="min-w-[120px]">경력</TableHead>
-                      <TableHead className="min-w-[250px]">특기사항</TableHead>
-                      <TableHead className="min-w-[180px] text-center">
-                          <div className='flex items-center justify-center gap-1'>
-                              근무 불가 날짜
-                              <Tooltip>
-                                  <TooltipTrigger asChild>
-                                      <Info className="h-4 w-4 text-muted-foreground" />
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <div className='text-sm p-1 max-w-xs'>
-                                      <p>날짜를 클릭하여 근무 불가일을 토글합니다.</p>
-                                      <p className='mt-1'>
-                                        <span className='font-bold'>Shift + 클릭</span>으로 기간 선택이 가능합니다.
-                                      </p>
-                                    </div>
-                                  </TooltipContent>
-                              </Tooltip>
-                          </div>
-                      </TableHead>
-                      <TableHead className="min-w-[100px] text-center sticky right-0 bg-secondary z-10">관리</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {caregivers.map((caregiver) => (
-                      <TableRow key={caregiver.id} data-state={selectedRowIds.includes(caregiver.id) ? "selected" : ""}>
-                          <TableCell className="sticky left-0 z-10 data-[state=selected]:bg-muted bg-background">
-                              <Checkbox 
-                                  onCheckedChange={(checked) => onSelectRow(caregiver.id, checked)}
-                                  checked={selectedRowIds.includes(caregiver.id)}
-                                  aria-label={`${caregiver.name} 선택`}
-                              />
-                          </TableCell>
-                          <TableCell>
-                              <Avatar>
-                                  <AvatarImage src={caregiver.photoUrl} alt={caregiver.name} />
-                                  <AvatarFallback>{caregiver.name.substring(0,1)}</AvatarFallback>
-                              </Avatar>
-                          </TableCell>
-                          <TableCell className="sticky left-[50px] z-10 font-medium data-[state=selected]:bg-muted bg-background">{caregiver.name}</TableCell>
-                          <TableCell>{caregiver.phone || '-'}</TableCell>
-                          <TableCell>{caregiver.birthDate ? format(new Date(caregiver.birthDate), 'yyyy-MM-dd') : '-'}</TableCell>
-                          <TableCell>{caregiver.gender || '-'}</TableCell>
-                            <TableCell>
-                            <CaregiverStatusSelect caregiver={caregiver} onStatusChange={onEditSuccess} />
-                          </TableCell>
-                          <TableCell className="max-w-[200px] truncate">
-                              <Tooltip>
-                                  <TooltipTrigger>
-                                      <p>{caregiver.certifications || '-'}</p>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                      <p>{caregiver.certifications || '자격증 정보 없음'}</p>
-                                  </TooltipContent>
-                              </Tooltip>
-                          </TableCell>
-                          <TableCell>{caregiver.experience || '-'}</TableCell>
-                          <TableCell className="max-w-[250px] truncate">
-                              <Tooltip>
-                                  <TooltipTrigger>
-                                      <p>{caregiver.specialNotes || '-'}</p>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                      <p className="max-w-xs whitespace-pre-wrap">{caregiver.specialNotes || '특기사항 없음'}</p>
-                                  </TooltipContent>
-                              </Tooltip>
-                          </TableCell>
-                          <TableCell>
-                              <UnavailableDatesManager caregiver={caregiver} onEditSuccess={onEditSuccess} />
-                          </TableCell>
-                          <TableCell className="text-center sticky right-0 z-10 data-[state=selected]:bg-muted bg-background">
-                            <Button variant="ghost" size="icon" onClick={() => onEditRequest(caregiver)}>
-                                <Pencil className="h-4 w-4" />
-                                <span className="sr-only">수정</span>
-                            </Button>
-                          </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </div>
-        </TooltipProvider>
-    );
-});
-CaregiverTable.displayName = 'CaregiverTable';
-
-// EditCaregiverDialog Component
-const EditCaregiverDialog = React.memo(({ 
-  caregiver, 
-  onEditSuccess,
-  onCancel
-}: { 
-  caregiver: Caregiver, 
-  onEditSuccess: (updatedCaregiver: Caregiver) => void,
-  onCancel: () => void 
-}) => {
-  const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string | undefined>>({});
-  const [birthDate, setBirthDate] = useState<Date | undefined>(
-    caregiver.birthDate ? startOfDay(new Date(caregiver.birthDate)) : undefined
-  );
-  const experiences = useMemo(() => ['신입', ...Array.from({ length: 9 }, (_, i) => `${i + 1}년`), '10년 이상'], []);
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsSubmitting(true);
-    setErrors({});
-
-    const formData = new FormData(event.currentTarget);
-    const data = {
-        id: caregiver.id,
-        name: formData.get('name') as string,
-        phone: formData.get('phone') as string,
-        photoUrl: formData.get('photoUrl') as string,
-        birthDate: birthDate ? format(birthDate, 'yyyy-MM-dd') : undefined,
-        gender: formData.get('gender') as '남성' | '여성' | null,
-        certifications: formData.get('certifications') as string,
-        experience: formData.get('experience') as string,
-        specialNotes: formData.get('specialNotes') as string,
-    };
-
-    try {
-        const response = await fetch(`/api/caregivers`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-        const result = await response.json();
-        if (!response.ok) { throw new Error(result.error || '수정 실패'); }
-
-        toast({ title: '성공', description: '간병인 정보가 수정되었습니다.' });
-        onEditSuccess(result.updatedCaregiver);
-    } catch (err: any) {
-        setErrors({ form: err.message });
-        toast({ variant: 'destructive', title: '오류', description: err.message });
-    } finally {
-        setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <DialogContent className="sm:max-w-3xl">
-      <DialogHeader>
-        <DialogTitle>간병인 정보 수정</DialogTitle>
-        <DialogDescription>{caregiver.name} 님의 정보를 수정합니다. 변경사항을 저장해주세요.</DialogDescription>
-      </DialogHeader>
-      <form onSubmit={handleSubmit} className="max-h-[70vh] overflow-y-auto px-1">
-        <div className="space-y-6 py-4">
-             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                      <Label htmlFor="edit-name">이름<span className="text-destructive">*</span></Label>
-                      <Input id="edit-name" name="name" defaultValue={caregiver.name} required />
-                  </div>
-                  <div className="space-y-2">
-                      <Label htmlFor="edit-phone">전화번호<span className="text-destructive">*</span></Label>
-                      <Input id="edit-phone" name="phone" defaultValue={caregiver.phone} required />
-                  </div>
-              </div>
-              <div className="space-y-2">
-                  <Label htmlFor="edit-photoUrl">사진 URL</Label>
-                  <Input id="edit-photoUrl" name="photoUrl" defaultValue={caregiver.photoUrl || ''} />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                      <Label htmlFor="edit-birthDate">생년월일<span className="text-destructive">*</span></Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !birthDate && "text-muted-foreground")}>
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {birthDate ? format(birthDate, "PPP", { locale: ko }) : <span>날짜 선택</span>}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={birthDate} onSelect={(d) => setBirthDate(d || undefined)} captionLayout="dropdown-buttons" fromYear={1940} toYear={new Date().getFullYear()} initialFocus locale={ko} /></PopoverContent>
-                      </Popover>
-                  </div>
-                  <div className="space-y-2">
-                      <Label htmlFor="edit-gender">성별<span className="text-destructive">*</span></Label>
-                      <Select name="gender" defaultValue={caregiver.gender}>
-                          <SelectTrigger><SelectValue placeholder="성별 선택" /></SelectTrigger>
-                          <SelectContent>
-                              <SelectItem value="남성">남성</SelectItem>
-                              <SelectItem value="여성">여성</SelectItem>
-                          </SelectContent>
-                      </Select>
-                  </div>
-              </div>
-              <div className="space-y-2">
-                  <Label htmlFor="edit-certifications">보유 자격증 (쉼표로 구분)</Label>
-                  <Input id="edit-certifications" name="certifications" defaultValue={caregiver.certifications || ''} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-experience">경력<span className="text-destructive">*</span></Label>
-                <Select name="experience" defaultValue={caregiver.experience}>
-                    <SelectTrigger><SelectValue placeholder="경력 선택" /></SelectTrigger>
-                    <SelectContent>
-                      {experiences.map(exp => <SelectItem key={exp} value={exp}>{exp}</SelectItem>)}
-                    </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                  <Label htmlFor="edit-specialNotes">특기사항</Label>
-                  <Textarea id="edit-specialNotes" name="specialNotes" defaultValue={caregiver.specialNotes || ''} rows={5} />
-              </div>
-              {errors.form && <p className="text-sm font-medium text-destructive">{errors.form}</p>}
-        </div>
-        <DialogFooter className="mt-6">
-            <DialogClose asChild><Button type="button" variant="secondary" onClick={onCancel}>취소</Button></DialogClose>
-            <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                변경사항 저장
-            </Button>
-        </DialogFooter>
-      </form>
-    </DialogContent>
-  );
-});
-EditCaregiverDialog.displayName = 'EditCaregiverDialog';
-
-
-const UnavailableDatesManager = React.memo(({ caregiver, onEditSuccess }: { caregiver: Caregiver, onEditSuccess: (c: Caregiver) => void }) => {
-    const { toast } = useToast();
-    const [isLoading, setIsLoading] = useState(false);
-    const lastSelectedDay = useRef<Date | null>(null);
-
-    // Use string representations ('yyyy-MM-dd') for state to avoid timezone issues
-    const [unavailableDateStrings, setUnavailableDateStrings] = useState<Set<string>>(
-        new Set((caregiver.unavailableDates || []).map(d => format(startOfDay(new Date(d)), 'yyyy-MM-dd')))
-    );
-
-    // Convert string set to Date array for the calendar component
-    const unavailableDates = useMemo(() => Array.from(unavailableDateStrings).map(dStr => new Date(dStr)), [unavailableDateStrings]);
-  
-    const handleDayClick = useCallback((day: Date | undefined, modifiers: { selected?: boolean }, e: React.MouseEvent) => {
-        if (!day) return; // Ignore undefined day clicks
-
-        const dayStr = format(day, 'yyyy-MM-dd');
-        let newUnavailableStrings: Set<string>;
-
-        if (e.shiftKey && lastSelectedDay.current) {
-            const currentStrings = new Set(unavailableDateStrings);
-            const start = lastSelectedDay.current < day ? lastSelectedDay.current : day;
-            const end = lastSelectedDay.current > day ? lastSelectedDay.current : day;
-            const daysInRange = differenceInDays(end, start);
-            
-            for(let i = 0; i <= daysInRange; i++) {
-                const dateInRangeStr = format(addDays(start, i), 'yyyy-MM-dd');
-                currentStrings.add(dateInRangeStr);
-            }
-            newUnavailableStrings = currentStrings;
-        } else {
-            // Regular click toggles a single day
-            const currentStrings = new Set(unavailableDateStrings);
-            if (currentStrings.has(dayStr)) {
-                currentStrings.delete(dayStr);
-            } else {
-                currentStrings.add(dayStr);
-            }
-            newUnavailableStrings = currentStrings;
-        }
-
-        lastSelectedDay.current = day;
-        
-        // Update local state immediately for responsiveness
-        setUnavailableDateStrings(newUnavailableStrings);
-        
-        // Send update to server
-        updateDatesOnServer(Array.from(newUnavailableStrings));
-    }, [unavailableDateStrings]);
-
-    const handleClearDates = useCallback(() => {
-        setUnavailableDateStrings(new Set());
-        updateDatesOnServer([]);
-        lastSelectedDay.current = null;
-    }, []);
-    
-    const updateDatesOnServer = useCallback(async (datesAsStrings: string[]) => {
-        setIsLoading(true);
-        try {
-            const response = await fetch(`/api/caregivers`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    id: caregiver.id,
-                    unavailableDates: datesAsStrings
-                }),
-            });
-            const result = await response.json();
-            if (!response.ok) throw new Error(result.error || '날짜 업데이트 실패');
-            
-            toast({ title: '성공', description: '근무 불가 날짜가 업데이트되었습니다.' });
-            onEditSuccess(result.updatedCaregiver);
-
-            // Sync state with server response to be safe
-            setUnavailableDateStrings(new Set(result.updatedCaregiver.unavailableDates || []));
-
-        } catch (err: any) {
-            toast({ variant: 'destructive', title: '오류', description: err.message });
-            // Revert state on failure
-            setUnavailableDateStrings(new Set((caregiver.unavailableDates || []).map(d => format(startOfDay(new Date(d)), 'yyyy-MM-dd'))));
-        } finally {
-            setIsLoading(false);
-        }
-    }, [caregiver.id, caregiver.unavailableDates, onEditSuccess, toast]);
-
-    return (
-        <Popover>
-            <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start font-normal text-sm">
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {isLoading ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                        unavailableDates.length > 0 ? `${unavailableDates.length}일 선택됨` : '날짜 선택'
-                    )}
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                    mode="multiple"
-                    min={0}
-                    selected={unavailableDates}
-                    onDayClick={handleDayClick}
-                    disabled={isLoading}
-                    locale={ko}
-                    footer={
-                      <div className="p-2 border-t flex justify-end">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={handleClearDates}
-                          disabled={isLoading || unavailableDates.length === 0}
-                        >
-                          전체 해제
-                        </Button>
-                      </div>
-                    }
-                />
-            </PopoverContent>
-        </Popover>
-    );
-});
-UnavailableDatesManager.displayName = 'UnavailableDatesManager';
-
-
-// Main AdminPage Component
-export default function AdminPage() {
-  const [caregivers, setCaregivers] = useState<Caregiver[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("register");
-  const [searchTerm, setSearchTerm] = useState('');
-  const { toast } = useToast();
-
-  const [selectedRowIds, setSelectedRowIds] = useState<number[]>([]);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [editingCaregiver, setEditingCaregiver] = useState<Caregiver | null>(null);
-
-  useEffect(() => {
-    const fetchCaregivers = async () => {
-        try {
-          setIsLoading(true);
-          const response = await fetch('/api/caregivers');
-          const data = await response.json();
-          if(!response.ok) {
-              throw new Error(data.error || '간병인 목록을 불러오지 못했습니다.')
-          }
-          const sortedData = (data || []).sort((a: Caregiver, b: Caregiver) => (b.id || 0) - (a.id || 0));
-          setCaregivers(sortedData);
-        } catch (error: any) {
-          toast({
-            variant: 'destructive',
-            title: '오류',
-            description: error.message || '간병인 목록을 불러오지 못했습니다.',
-          });
-          setCaregivers([]);
-        } finally {
-          setIsLoading(false);
-        }
-    };
-    fetchCaregivers();
-  }, [toast]);
-
-  const filteredCaregivers = useMemo(() => {
-    if (!searchTerm) return caregivers;
-    return caregivers.filter(caregiver =>
-      caregiver.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [caregivers, searchTerm]);
-
-  const handleAddSuccess = useCallback((newCaregiver: Caregiver) => {
-    setCaregivers((prev) => [newCaregiver, ...prev].sort((a,b) => (b.id || 0) - (a.id || 0)));
-    setActiveTab("manage");
-  }, []);
-
-  const handleEditSuccess = useCallback((updatedCaregiver: Caregiver) => {
-    setCaregivers(prev => prev.map(c => c.id === updatedCaregiver.id ? updatedCaregiver : c));
-    setEditingCaregiver(null);
-  }, []);
-
-  const handleDeleteSuccess = useCallback((deletedIds: number[]) => {
-      setCaregivers(prev => prev.filter(c => !deletedIds.includes(c.id)));
-  }, []);
-
-  const handleSelectAllRows = useCallback((checked: boolean | string) => {
-    setSelectedRowIds(checked ? filteredCaregivers.map(c => c.id) : []);
-  }, [filteredCaregivers]);
-
-  const handleSelectRow = useCallback((id: number, checked: boolean | string) => {
-      setSelectedRowIds(prev => checked ? [...prev, id] : prev.filter(rowId => rowId !== id));
-  }, []);
-
-  const handleDeleteSelectedRows = useCallback(async () => {
-      setIsDeleting(true);
-      try {
-          const response = await fetch('/api/caregivers', {
-              method: 'DELETE',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ ids: selectedRowIds }),
-          });
-          const result = await response.json();
-          if (!response.ok) {
-              throw new Error(result.error || '삭제 중 오류가 발생했습니다.');
-          }
-          toast({
-              title: "성공",
-              description: `${result.count}명의 간병인이 삭제되었습니다.`
-          });
-          handleDeleteSuccess(selectedRowIds);
-          setSelectedRowIds([]);
-      } catch (err: any) {
-           toast({
-              variant: 'destructive',
-              title: '오류',
-              description: err.message,
-          });
-      } finally {
-          setIsDeleting(false);
-      }
-  }, [selectedRowIds, handleDeleteSuccess, toast]);
-  
-  const handleEditRequest = useCallback((caregiver: Caregiver) => {
-    setEditingCaregiver(caregiver);
-  }, []);
-
-  const handleCancelEdit = useCallback(() => {
-    setEditingCaregiver(null);
-  }, []);
-
-  return (
-    <div className="container py-10">
-      <div className="flex justify-between items-center mb-10">
-        <div>
-          <h1 className="text-4xl font-bold">관리자 페이지</h1>
-          <p className="text-muted-foreground mt-2">간병인 정보를 등록하고 관리합니다.</p>
-        </div>
-        <LogoutButton />
-      </div>
-      
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="register">새 간병인 등록</TabsTrigger>
-          <TabsTrigger value="manage">간병인 관리</TabsTrigger>
-        </TabsList>
-        <TabsContent value="register" className="mt-6">
-            <CaregiverForm onSuccess={handleAddSuccess} />
-        </TabsContent>
-        <TabsContent value="manage" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>등록된 간병인 목록</CardTitle>
-              <div className="flex justify-between items-center gap-4 pt-2">
-                <CardDescription>{caregivers.length}명의 간병인이 등록되어 있습니다.</CardDescription>
-                <div className="relative w-full max-w-xs">
-                  <Input 
-                    placeholder="이름으로 검색..." 
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <div className="flex justify-center items-center py-10">
-                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                </div>
-              ) : (
-                <CaregiverTable 
-                    caregivers={filteredCaregivers} 
-                    selectedRowIds={selectedRowIds}
-                    isDeleting={isDeleting}
-                    onSelectAll={handleSelectAllRows}
-                    onSelectRow={handleSelectRow}
-                    onDeleteSelected={handleDeleteSelectedRows}
-                    onEditSuccess={handleEditSuccess} 
-                    onEditRequest={handleEditRequest}
-                />
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-      
-      <Dialog open={!!editingCaregiver} onOpenChange={(open) => !open && handleCancelEdit()}>
-        {editingCaregiver && (
-           <EditCaregiverDialog 
-              caregiver={editingCaregiver} 
-              onEditSuccess={handleEditSuccess}
-              onCancel={handleCancelEdit}
-           />
-        )}
-      </Dialog>
-    </div>
-  );
-}
-```
-
----
-
-## src/app/actions.ts
-
-```ts
-'use server';
-
-import { caregiverRecommendation } from '@/ai/flows/caregiver-recommendation';
-import type { CaregiverRecommendationInput, CaregiverRecommendationOutput } from '@/types/caregiver-types';
-import { z } from 'zod';
-import { Resend } from 'resend';
-import { getAdminEmails } from '@/lib/settings';
-
-// New type for the action input
-type CareRecommendationRequest = CaregiverRecommendationInput & {
-    userName: string;
-    userPhone: string;
-};
-
-export async function getCaregiverRecommendations(request: CareRecommendationRequest): Promise<CaregiverRecommendationOutput> {
-  const { userName, userPhone, ...caregiverInput } = request;
-
-  // --- Step 1: Get recommendations first ---
-  const result = await caregiverRecommendation(caregiverInput);
-
-  // --- Step 2: If recommendations are found, THEN send the email ---
-  if (result.recommendations.length > 0) {
-      try {
-        const resendApiKey = process.env.CARECONNECT_RESEND_API_KEY;
-        if (!resendApiKey || resendApiKey.length < 5) {
-            console.warn('[Email Action] Resend API 키가 .env.local 파일에 설정되지 않았습니다. 추천 요청 이메일을 보낼 수 없습니다.');
-        } else {
-            const adminEmails = await getAdminEmails();
-            const resend = new Resend(resendApiKey);
-
-            if (adminEmails && adminEmails.length > 0) {
-                const fromEmail = process.env.CARECONNECT_EMAIL_FROM || 'onboarding@resend.dev';
-                
-                let requestedDatesText = '미지정';
-                if (caregiverInput.requestedDateRange) {
-                    const { from, to } = caregiverInput.requestedDateRange;
-                    if (from && to && from !== to) {
-                        requestedDatesText = `${from} ~ ${to}`;
-                    } else if (from) {
-                        requestedDatesText = from;
-                    }
-                }
-
-                await resend.emails.send({
-                    from: fromEmail,
-                    to: adminEmails,
-                    subject: `천사손길: 간병인 추천 요청 접수 (${userName})`,
-                    html: `
-                    <h1>간병인 추천 요청 접수</h1>
-                    <p>새로운 간병인 추천 요청이 접수되었습니다. 아래 내용을 확인해주세요.</p>
-                    <hr />
-                    <p><strong>요청자 성명:</strong> ${userName}</p>
-                    <p><strong>요청자 연락처:</strong> ${userPhone}</p>
-                    <hr />
-                    <h2>요청 내용 상세</h2>
-                    <p><strong>돌봄 대상 성별:</strong> ${caregiverInput.patientGender || '미지정'}</p>
-                    <p><strong>돌봄 대상 생년월일:</strong> ${caregiverInput.patientBirthDate || '미지정'}</p>
-                    <p><strong>돌봄 유형:</strong> ${caregiverInput.careType}</p>
-                    <p><strong>희망 날짜:</strong> ${requestedDatesText}</p>
-                    <p><strong>희망 시간:</strong> ${caregiverInput.requestedTime || '미지정'}</p>
-                    <p><strong>구체적인 필요 사항:</strong></p>
-                    <p style="white-space: pre-wrap;">${caregiverInput.specificNeeds}</p>
-                    `,
-                });
-            }
-        }
-      } catch (error) {
-        console.error("[Email Action] A critical error occurred during the recommendation request email process:", error);
-      }
-  }
-
-  // --- Step 3: Return the recommendations to the user ---
-  return result;
-}
-
-
-// --- Email Sending Actions ---
-
-const CaregiverInquirySchema = z.object({
-  userName: z.string(),
-  userPhone: z.string(),
-  caregiverName: z.string(),
-  caregiverAge: z.number(),
-  caregiverGender: z.string(),
-  caregiverPhone: z.string(),
-});
-
-export async function submitCaregiverInquiry(data: z.infer<typeof CaregiverInquirySchema>) {
-  try {
-    const resendApiKey = process.env.CARECONNECT_RESEND_API_KEY;
-    if (!resendApiKey || resendApiKey.length < 5) {
-      return { success: false, message: '이메일 서비스가 설정되지 않았습니다. 관리자에게 문의해주세요.' };
-    }
-    const resend = new Resend(resendApiKey);
-
-    const adminEmails = await getAdminEmails();
-    if (!adminEmails || adminEmails.length === 0) {
-      return { success: false, message: '수신 이메일이 설정되지 않았습니다. 관리자 페이지에서 이메일을 추가해주세요.' };
-    }
-    
-    const fromEmail = process.env.CARECONNECT_EMAIL_FROM || 'onboarding@resend.dev';
-    const { userName, userPhone, caregiverName, caregiverAge, caregiverGender, caregiverPhone } = data;
-
-    console.log(`[Email Action] Attempting to send 'Caregiver Inquiry' email.`);
-    console.log(` - From: ${fromEmail}`);
-    console.log(` - To: ${adminEmails.join(', ')}`);
-    console.log(` - Resend Sandbox Note: In sandbox mode, emails can only be sent TO the verified email address used for Resend signup.`);
-
-    const { data: responseData, error } = await resend.emails.send({
-      from: fromEmail,
-      to: adminEmails,
-      subject: `천사손길: 간병인 지정 문의 (${userName})`,
-      html: `
-        <h1>간병인 지정 문의</h1>
-        <p>추천 시스템을 통해 특정 간병인에 대한 문의가 접수되었습니다.</p>
-        <hr />
-        <h2>문의자 정보</h2>
-        <p><strong>성명:</strong> ${userName}</p>
-        <p><strong>연락처:</strong> ${userPhone}</p>
-        <hr />
-        <h2>선택한 간병인 정보</h2>
-        <p><strong>성명:</strong> ${caregiverName}</p>
-        <p><strong>나이:</strong> ${caregiverAge}세</p>
-        <p><strong>성별:</strong> ${caregiverGender}</p>
-        <p><strong>연락처:</strong> ${caregiverPhone}</p>
-        <hr />
-        <p>빠른 시간 내에 문의자에게 연락하여 예약을 확정해주세요.</p>
-      `,
-    });
-
-    if (error) {
-      console.error('[Email Action] Resend API Error in submitCaregiverInquiry:', error);
-      if (error.name === 'missing_api_key') {
-          return { success: false, message: '이메일 서비스 API 키가 설정되지 않았습니다. .env 파일을 확인해주세요.' };
-      }
-      if (error.name === 'invalid_api_key') {
-        return { success: false, message: '이메일 서비스 API 키가 유효하지 않습니다. .env 파일을 확인해주세요.' };
-      }
-      if (error.message.includes('You can only send emails to')) {
-        return { success: false, message: '테스트 모드에서는 Resend에 가입한 이메일로만 메일을 보낼 수 있습니다. 관리자 이메일 설정을 확인해주세요.' };
-      }
-      return { success: false, message: '문의 접수 중 오류가 발생했습니다. 서버 로그를 확인해주세요.' };
-    }
-    
-    console.log('[Email Action] "Caregiver Inquiry" email sent successfully. Resend ID:', responseData?.id);
-    return { success: true, message: '문의가 성공적으로 접수되었습니다. 곧 연락드리겠습니다.' };
-
-  } catch (error: any) {
-    console.error('[Email Action] A critical error occurred in submitCaregiverInquiry:', error);
-    if (error.message.toLowerCase().includes('missing api key')) {
-        return { success: false, message: '이메일 서비스 API 키가 설정되지 않았습니다. .env 파일을 확인해주세요.' };
-    }
-    return { success: false, message: '문의 접수 중 심각한 오류가 발생했습니다.' };
-  }
-}
-
-const InsuranceRequestSchema = z.object({
-  patientName: z.string(),
-  guardianName: z.string().optional(),
-  hospitalName: z.string().optional(),
-  phoneNumber: z.string(),
-  caregiverName: z.string().optional(),
-  servicePeriod: z.string().optional(),
-  email: z.string().optional(),
-  requestDetails: z.string().optional(),
-});
-
-export async function submitInsuranceRequest(data: z.infer<typeof InsuranceRequestSchema>) {
-  try {
-    const resendApiKey = process.env.CARECONNECT_RESEND_API_KEY;
-    if (!resendApiKey || resendApiKey.length < 5) {
-      return { success: false, message: '이메일 서비스가 설정되지 않았습니다. 관리자에게 문의해주세요.' };
-    }
-    const resend = new Resend(resendApiKey);
-
-    const adminEmails = await getAdminEmails();
-    if (!adminEmails || adminEmails.length === 0) {
-      return { success: false, message: '수신 이메일이 설정되지 않았습니다. 관리자 페이지에서 이메일을 추가해주세요.' };
-    }
-    
-    const fromEmail = process.env.CARECONNECT_EMAIL_FROM || 'onboarding@resend.dev';
-    const { patientName, guardianName, hospitalName, phoneNumber, caregiverName, servicePeriod, email, requestDetails } = data;
-
-    console.log(`[Email Action] Attempting to send 'Insurance Request' email.`);
-    console.log(` - From: ${fromEmail}`);
-    console.log(` - To: ${adminEmails.join(', ')}`);
-    console.log(` - Resend Sandbox Note: In sandbox mode, emails can only be sent TO the verified email address used for Resend signup.`);
-
-    const { data: responseData, error } = await resend.emails.send({
-      from: fromEmail,
-      to: adminEmails,
-      reply_to: email,
-      subject: `천사손길: 보험서류 요청 (${patientName})`,
-      html: `
-        <h1>보험서류 요청</h1>
-        <p><strong>환자 성명:</strong> ${patientName}</p>
-        <p><strong>보호자 성명:</strong> ${guardianName || '기입 안함'}</p>
-        <p><strong>병원명:</strong> ${hospitalName || '기입 안함'}</p>
-        <p><strong>연락처:</strong> ${phoneNumber}</p>
-        <p><strong>간병인 성명:</strong> ${caregiverName || '기입 안함'}</p>
-        <p><strong>서비스 기간:</strong> ${servicePeriod || '기입 안함'}</p>
-        <p><strong>회신 받을 이메일:</strong> ${email || '기입 안함'}</p>
-        <hr />
-        <h2>요청 내용:</h2>
-        <p style="white-space: pre-wrap;">${requestDetails || '내용 없음'}</p>
-      `,
-    });
-
-    if (error) {
-      console.error('[Email Action] Resend API Error in submitInsuranceRequest:', error);
-      if (error.name === 'missing_api_key') {
-          return { success: false, message: '이메일 서비스 API 키가 설정되지 않았습니다. .env 파일을 확인해주세요.' };
-      }
-      if (error.name === 'invalid_api_key') {
-        return { success: false, message: '이메일 서비스 API 키가 유효하지 않습니다. .env 파일을 확인해주세요.' };
-      }
-      if (error.message.includes('You can only send emails to')) {
-        return { success: false, message: '테스트 모드에서는 Resend에 가입한 이메일로만 메일을 보낼 수 있습니다. 관리자 이메일 설정을 확인해주세요.' };
-      }
-      return { success: false, message: '이메일 전송 중 오류가 발생했습니다. 서버 로그를 확인해주세요.' };
-    }
-
-    console.log('[Email Action] "Insurance Request" email sent successfully. Resend ID:', responseData?.id);
-    return { success: true, message: '보험서류 요청이 성공적으로 접수되었습니다.' };
-  } catch (error: any) {
-    console.error('[Email Action] A critical error occurred in submitInsuranceRequest:', error);
-    if (error.message.toLowerCase().includes('missing api key')) {
-        return { success: false, message: '이메일 서비스 API 키가 설정되지 않았습니다. .env 파일을 확인해주세요.' };
-    }
-    return { success: false, message: '이메일 전송 중 심각한 오류가 발생했습니다.' };
-  }
-}
-
-const FamilyInsuranceRequestSchema = z.object({
-  patientName: z.string(),
-  phoneNumber: z.string(),
-  familyCaregiverName: z.string().optional(),
-  hospitalName: z.string().optional(),
-  carePeriod: z.string().optional(),
-  email: z.string().optional(),
-  requestDetails: z.string().optional(),
-});
-
-export async function submitFamilyInsuranceRequest(data: z.infer<typeof FamilyInsuranceRequestSchema>) {
-  try {
-    const resendApiKey = process.env.CARECONNECT_RESEND_API_KEY;
-    if (!resendApiKey || resendApiKey.length < 5) {
-      return { success: false, message: '이메일 서비스가 설정되지 않았습니다. 관리자에게 문의해주세요.' };
-    }
-    const resend = new Resend(resendApiKey);
-
-    const adminEmails = await getAdminEmails();
-    if (!adminEmails || adminEmails.length === 0) {
-      return { success: false, message: '수신 이메일이 설정되지 않았습니다. 관리자 페이지에서 이메일을 추가해주세요.' };
-    }
-    
-    const fromEmail = process.env.CARECONNECT_EMAIL_FROM || 'onboarding@resend.dev';
-    const { patientName, phoneNumber, familyCaregiverName, hospitalName, carePeriod, email, requestDetails } = data;
-
-    const { data: responseData, error } = await resend.emails.send({
-      from: fromEmail,
-      to: adminEmails,
-      reply_to: email,
-      subject: `천사손길: 가족 간병인 보험서류 요청 (${patientName})`,
-      html: `
-        <h1>가족 간병인 보험서류 요청</h1>
-        <p><strong>환자 성명:</strong> ${patientName}</p>
-        <p><strong>전화번호:</strong> ${phoneNumber}</p>
-        <p><strong>가족간병인 성명:</strong> ${familyCaregiverName || '기입 안함'}</p>
-        <p><strong>병원명:</strong> ${hospitalName || '기입 안함'}</p>
-        <p><strong>간병기간:</strong> ${carePeriod || '기입 안함'}</p>
-        <p><strong>회신 받을 이메일:</strong> ${email || '기입 안함'}</p>
-        <hr />
-        <h2>요청 내용:</h2>
-        <p style="white-space: pre-wrap;">${requestDetails || '내용 없음'}</p>
-      `,
-    });
-
-    if (error) {
-      console.error('[Email Action] Resend API Error in submitFamilyInsuranceRequest:', error);
-       if (error.name === 'missing_api_key') {
-          return { success: false, message: '이메일 서비스 API 키가 설정되지 않았습니다. .env 파일을 확인해주세요.' };
-      }
-      if (error.name === 'invalid_api_key') {
-        return { success: false, message: '이메일 서비스 API 키가 유효하지 않습니다. .env 파일을 확인해주세요.' };
-      }
-      if (error.message.includes('You can only send emails to')) {
-        return { success: false, message: '테스트 모드에서는 Resend에 가입한 이메일로만 메일을 보낼 수 있습니다. 관리자 이메일 설정을 확인해주세요.' };
-      }
-      return { success: false, message: '이메일 전송 중 오류가 발생했습니다. 서버 로그를 확인해주세요.' };
-    }
-
-    console.log('[Email Action] "Family Insurance Request" email sent successfully. Resend ID:', responseData?.id);
-    return { success: true, message: '가족 간병인 보험서류 요청이 성공적으로 접수되었습니다.' };
-
-  } catch (error: any) {
-    console.error('[Email Action] A critical error occurred in submitFamilyInsuranceRequest:', error);
-    if (error.message.toLowerCase().includes('missing api key')) {
-        return { success: false, message: '이메일 서비스 API 키가 설정되지 않았습니다. .env 파일을 확인해주세요.' };
-    }
-    return { success: false, message: '이메일 전송 중 심각한 오류가 발생했습니다.' };
-  }
-}
-
-
-const GeneralInquirySchema = z.object({
-  name: z.string(),
-  phone: z.string(),
-  email: z.string().optional(),
-  message: z.string().optional(),
-});
-
-export async function submitGeneralInquiry(data: z.infer<typeof GeneralInquirySchema>) {
-  try {
-    const resendApiKey = process.env.CARECONNECT_RESEND_API_KEY;
-    if (!resendApiKey || resendApiKey.length < 5) {
-      return { success: false, message: '이메일 서비스가 설정되지 않았습니다. 관리자에게 문의해주세요.' };
-    }
-    const resend = new Resend(resendApiKey);
-  
-    const adminEmails = await getAdminEmails();
-    if (!adminEmails || adminEmails.length === 0) {
-      return { success: false, message: '수신 이메일이 설정되지 않았습니다. 관리자 페이지에서 이메일을 추가해주세요.' };
-    }
-    
-    const fromEmail = process.env.CARECONNECT_EMAIL_FROM || 'onboarding@resend.dev';
-    const { name, phone, email, message } = data;
-
-    console.log(`[Email Action] Attempting to send 'General Inquiry' email.`);
-    console.log(` - From: ${fromEmail}`);
-    console.log(` - To: ${adminEmails.join(', ')}`);
-    console.log(` - Resend Sandbox Note: In sandbox mode, emails can only be sent TO the verified email address used for Resend signup.`);
-
-    const { data: responseData, error } = await resend.emails.send({
-      from: fromEmail,
-      to: adminEmails,
-      reply_to: email,
-      subject: `천사손길: 일반 문의 (${name})`,
-      html: `
-        <h1>일반 문의</h1>
-        <p><strong>성함:</strong> ${name}</p>
-        <p><strong>연락처:</strong> ${phone}</p>
-        <p><strong>회신 받을 이메일:</strong> ${email || '기입 안함'}</p>
-        <hr />
-        <h2>문의 내용:</h2>
-        <p style="white-space: pre-wrap;">${message || '내용 없음'}</p>
-      `,
-    });
-
-    if (error) {
-      console.error('[Email Action] Resend API Error in submitGeneralInquiry:', error);
-      if (error.name === 'missing_api_key') {
-          return { success: false, message: '이메일 서비스 API 키가 설정되지 않았습니다. .env 파일을 확인해주세요.' };
-      }
-      if (error.name === 'invalid_api_key') {
-        return { success: false, message: '이메일 서비스 API 키가 유효하지 않습니다. .env 파일을 확인해주세요.' };
-      }
-      if (error.message.includes('You can only send emails to')) {
-        return { success: false, message: '테스트 모드에서는 Resend에 가입한 이메일로만 메일을 보낼 수 있습니다. 관리자 이메일 설정을 확인해주세요.' };
-      }
-      return { success: false, message: '이메일 전송 중 오류가 발생했습니다. 서버 로그를 확인해주세요.' };
-    }
-
-    console.log('[Email Action] "General Inquiry" email sent successfully. Resend ID:', responseData?.id);
-    return { success: true, message: '문의가 성공적으로 접수되었습니다.' };
-  } catch (error: any) {
-    console.error('[Email Action] A critical error occurred in submitGeneralInquiry:', error);
-    if (error.message.toLowerCase().includes('missing api key')) {
-        return { success: false, message: '이메일 서비스 API 키가 설정되지 않았습니다. .env 파일을 확인해주세요.' };
-    }
-    return { success: false, message: '이메일 전송 중 심각한 오류가 발생했습니다.' };
-  }
-}
-
-// --- Caregiver Support Application Email Action ---
-
-const SupportApplicationSchema = z.object({
-    name: z.string(),
-    contact: z.string(),
-    region: z.array(z.string()),
-    birthDate: z.string(),
-    gender: z.string(),
-    photoDataUri: z.string().optional(),
-    certifications: z.string().optional(),
-    experience: z.string(),
-    selfIntroduction: z.string().optional(),
-});
-
-
-export async function submitSupportApplicationEmail(data: z.infer<typeof SupportApplicationSchema>) {
-    try {
-        const resendApiKey = process.env.CARECONNECT_RESEND_API_KEY;
-        if (!resendApiKey || resendApiKey.length < 5) {
-          return { success: false, message: '이메일 서비스가 설정되지 않았습니다. 관리자에게 문의해주세요.' };
-        }
-        const resend = new Resend(resendApiKey);
-
-        const adminEmails = await getAdminEmails();
-        if (!adminEmails || adminEmails.length === 0) {
-            return { success: false, message: '수신 이메일이 설정되지 않았습니다. 관리자 페이지에서 이메일을 추가해주세요.' };
-        }
-
-        const fromEmail = process.env.CARECONNECT_EMAIL_FROM || 'onboarding@resend.dev';
-        const { name, contact, region, birthDate, gender, photoDataUri, certifications, experience, selfIntroduction } = data;
-
-        let attachments = [];
-        if (photoDataUri) {
-            const buffer = Buffer.from(photoDataUri.split(',')[1], 'base64');
-            attachments.push({
-                filename: `${name}_profile.png`,
-                content: buffer,
-            });
-        }
-        
-        const { data: responseData, error } = await resend.emails.send({
-            from: fromEmail,
-            to: adminEmails,
-            subject: `천사손길: 새로운 간병인 지원서 도착 (${name})`,
-            html: `
-                <h1>새로운 간병인 지원서</h1>
-                <p>새로운 간병인 지원서가 접수되었습니다. 아래 내용을 확인해주세요.</p>
-                <hr />
-                <h2>지원자 정보</h2>
-                <p><strong>성명:</strong> ${name}</p>
-                <p><strong>연락처:</strong> ${contact}</p>
-                <p><strong>성별:</strong> ${gender}</p>
-                <p><strong>생년월일:</strong> ${birthDate}</p>
-                <p><strong>근무 가능 지역:</strong> ${region.join(', ')}</p>
-                <p><strong>경력:</strong> ${experience}</p>
-                <p><strong>보유 자격증:</strong> ${certifications || '기입 안함'}</p>
-                <hr />
-                <h2>자기소개</h2>
-                <p style="white-space: pre-wrap;">${selfIntroduction || '내용 없음'}</p>
-            `,
-            attachments: attachments,
-        });
-
-        if (error) {
-            console.error('[Email Action] Resend API Error in submitSupportApplicationEmail:', error);
-            // ... (error handling as in other functions)
-            return { success: false, message: '지원서 접수 중 오류가 발생했습니다. 서버 로그를 확인해주세요.' };
-        }
-        
-        console.log('[Email Action] "Support Application" email sent successfully. Resend ID:', responseData?.id);
-        return { success: true, message: '간병인 지원서가 성공적으로 제출되었습니다. 검토 후 연락드리겠습니다.' };
-
-    } catch (error: any) {
-        console.error('[Email Action] A critical error occurred in submitSupportApplicationEmail:', error);
-        if (error.message.toLowerCase().includes('missing api key')) {
-            return { success: false, message: '이메일 서비스 API 키가 설정되지 않았습니다. .env 파일을 확인해주세요.' };
-        }
-        return { success: false, message: '지원서 접수 중 심각한 오류가 발생했습니다.' };
-    }
-}
-```
-
----
-
-## src/app/page.tsx
-
-```tsx
-import Hero from '@/components/sections/hero';
-import Services from '@/components/sections/services';
-import HowItWorks from '@/components/sections/how-it-works';
-import AiMatcher from '@/components/sections/ai-matcher';
-import Testimonials from '@/components/sections/testimonials';
-import Contact from '@/components/sections/contact';
-import RecentClaims from '@/components/sections/recent-claims';
-
-export default function Home() {
-  return (
-    <>
-      <Hero />
-      <Services />
-      <HowItWorks />
-      <AiMatcher />
-      <Testimonials />
-      <RecentClaims />
-      <Contact />
-    </>
-  );
-}
-```
-
----
-
 ## src/app/layout.tsx
 
 ```tsx
@@ -2842,19 +1515,13 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
-import { PT_Sans, Gowun_Dodum } from 'next/font/google';
+import { PT_Sans } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
 const ptSans = PT_Sans({
   subsets: ['latin'],
   weight: ['400', '700'],
   variable: '--font-sans',
-});
-
-const gowunDodum = Gowun_Dodum({
-  subsets: ['latin'],
-  weight: ['400'],
-  variable: '--font-headline',
 });
 
 export const metadata: Metadata = {
@@ -2872,7 +1539,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <body className={cn("antialiased", ptSans.variable, gowunDodum.variable)}>
+      <body className={cn("antialiased", ptSans.variable)}>
         <div className="flex flex-col min-h-screen">
           <Header />
           <main className="flex-grow">{children}</main>
@@ -3051,7 +1718,7 @@ export default function CaregiverCard({ caregiver, inquirerInfo }: CaregiverCard
     const initials = caregiver.name.length > 0 ? caregiver.name.substring(0, 1) : '';
 
     const summary = caregiver.experience && caregiver.experience.length > 50 
-        ? `${'${'}caregiver.experience.substring(0, 50)}...` 
+        ? `${caregiver.experience.substring(0, 50)}...` 
         : caregiver.experience;
 
     return (
@@ -3073,7 +1740,7 @@ export default function CaregiverCard({ caregiver, inquirerInfo }: CaregiverCard
                             <p className="text-sm text-muted-foreground">{summary}</p>
                         </div>
                         <div>
-                            <h4 className="font-semibold text-sm mb-1">적합도: ${'${'}caregiver.suitabilityScore}%</h4>
+                            <h4 className="font-semibold text-sm mb-1">적합도: {caregiver.suitabilityScore}%</h4>
                             <Progress value={caregiver.suitabilityScore} className="h-2" />
                         </div>
                     </CardContent>
@@ -3177,13 +1844,13 @@ const formSchema = z.object({
 
 const startTimeOptions = Array.from({ length: 24 }, (_, i) => {
     const hour = i.toString().padStart(2, '0');
-    return `${'${'}hour}:00`;
+    return `${hour}:00`;
 });
 
 const endTimeOptions = Array.from({ length: 24 }, (_, i) => {
     const hour = (i).toString().padStart(2, '0');
     if (i === 24) return '24:00';
-    return `${'${'}hour}:00`;
+    return `${hour}:00`;
 }).slice(1);
 endTimeOptions.push('24:00');
 
@@ -3222,11 +1889,11 @@ export default function CaregiverRecommendationForm() {
     
     let requestedTime: string | undefined;
     if (values.scheduleStartTime && values.scheduleEndTime) {
-      requestedTime = `${'${'}values.scheduleStartTime} ~ ${'${'}values.scheduleEndTime}`;
+      requestedTime = `${values.scheduleStartTime} ~ ${values.scheduleEndTime}`;
     } else if (values.scheduleStartTime) {
-      requestedTime = `${'${'}values.scheduleStartTime}부터`;
+      requestedTime = `${values.scheduleStartTime}부터`;
     } else if (values.scheduleEndTime) {
-      requestedTime = `${'${'}values.scheduleEndTime}까지`;
+      requestedTime = `${values.scheduleEndTime}까지`;
     }
 
     try {
@@ -3463,7 +2130,7 @@ export default function CaregiverRecommendationForm() {
                             </FormControl>
                             <SelectContent>
                                 <SelectItem value="none">선택 안함</SelectItem>
-                                {startTimeOptions.map(time => <SelectItem key={`start-${'${'}time}`} value={time}>{time}</SelectItem>)}
+                                {startTimeOptions.map(time => <SelectItem key={`start-${time}`} value={time}>{time}</SelectItem>)}
                             </SelectContent>
                         </Select>
                         <FormMessage />
@@ -3484,7 +2151,7 @@ export default function CaregiverRecommendationForm() {
                             </FormControl>
                             <SelectContent>
                                 <SelectItem value="none">선택 안함</SelectItem>
-                                {endTimeOptions.map(time => <SelectItem key={`end-${'${'}time}`} value={time}>{time}</SelectItem>)}
+                                {endTimeOptions.map(time => <SelectItem key={`end-${time}`} value={time}>{time}</SelectItem>)}
                             </SelectContent>
                         </Select>
                         <FormMessage />
@@ -3597,7 +2264,7 @@ export default function FamilyInsuranceClaimForm() {
     
     setIsLoading(true);
 
-    const email = emailId ? `${'${'}emailId}@${'${'}emailDomain === 'custom' ? customEmailDomain : emailDomain}`: undefined;
+    const email = emailId ? `${emailId}@${emailDomain === 'custom' ? customEmailDomain : emailDomain}`: undefined;
     
     const result = await submitFamilyInsuranceRequest({
       patientName,
@@ -3739,7 +2406,7 @@ export default function GeneralInquiryForm() {
     
     setIsGeneralLoading(true);
 
-    const email = generalEmailId ? `${'${'}generalEmailId}@${'${'}generalEmailDomain === 'custom' ? generalCustomEmailDomain : generalEmailDomain}`: undefined;
+    const email = generalEmailId ? `${generalEmailId}@${generalEmailDomain === 'custom' ? generalCustomEmailDomain : generalEmailDomain}`: undefined;
 
     const result = await submitGeneralInquiry({
         name: generalName,
@@ -3872,7 +2539,7 @@ export default function InsuranceClaimForm() {
     
     setIsInsuranceLoading(true);
 
-    const email = emailId ? `${'${'}emailId}@${'${'}emailDomain === 'custom' ? customEmailDomain : emailDomain}` : undefined;
+    const email = emailId ? `${emailId}@${emailDomain === 'custom' ? customEmailDomain : emailDomain}` : undefined;
     
     const result = await submitInsuranceRequest({
       patientName,
@@ -4182,10 +2849,10 @@ export default function Contact() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {contactOptions.map((option) => (
             <Link href={option.href} key={option.title} className="group">
-              <Card className={`shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col border-2 border-transparent ${'${'}option.hoverBorderColor}`}>
+              <Card className={`shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col border-2 border-transparent ${option.hoverBorderColor}`}>
                 <CardHeader>
                   <div className="flex items-center gap-4">
-                      <div className={`${'${'}option.bgColor} ${'${'}option.textColor} p-4 rounded-full transition-colors duration-300`}>
+                      <div className={`${option.bgColor} ${option.textColor} p-4 rounded-full transition-colors duration-300`}>
                           {option.icon}
                       </div>
                       <div>
@@ -4323,37 +2990,36 @@ interface Claim {
 const names = ['김O민', '이O서', '박O준', '최O윤', '정O아', '강O진', '조O현', '윤O솔', '장O호', '임O연'];
 const claimTypes = ['병원 간병비', '가족 간병비'];
 
-// Hydration 오류를 막기 위해 정적 데이터 생성
-const generateStaticClaims = (): Claim[] => {
+const generateDailyClaims = (): Claim[] => {
   const today = new Date();
   const claims: Claim[] = [];
+  // Use day of the year as a seed to make the list different each day
+  const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+
   for (let i = 0; i < 20; i++) {
-    const name = names[i % names.length];
-    const claimType = claimTypes[i % claimTypes.length];
+    const seed = (dayOfYear + i) * 3;
+    const name = names[seed % names.length];
+    const claimType = claimTypes[seed % claimTypes.length];
     const date = format(subDays(today, i % 5), 'MM.dd', { locale: ko });
-    claims.push({ name: `${'${'}name}님`, claimType, date });
+    claims.push({ name: `${name}님`, claimType, date });
   }
   return claims;
 };
-
-const staticClaims = generateStaticClaims();
 
 
 export default function RecentClaims() {
   const [claims, setClaims] = useState<Claim[]>([]);
 
   useEffect(() => {
-    // 클라이언트에서만 실행되어야 하는 부작용을 방지하기 위해
-    // 정적 데이터를 상태에 설정합니다.
-    setClaims(staticClaims);
+    // This runs only on the client-side to prevent hydration mismatch
+    setClaims(generateDailyClaims());
   }, []);
 
   if (claims.length === 0) {
-    // 초기 렌더링 시나 데이터가 없을 때 아무것도 렌더링하지 않음
-    return null; 
+    return null; // Don't render server-side or until claims are generated
   }
 
-  // 원활한 반복을 위해 목록을 복제합니다.
+  // Duplicate the list for a seamless loop
   const displayClaims = [...claims, ...claims];
 
   return (
@@ -4622,7 +3288,7 @@ export default function SupportForm() {
     }
   }, [state, toast]);
 
-  const experiences = ['신입', ...Array.from({ length: 9 }, (_, i) => `${'${'}i + 1}년`), '10년 이상'];
+  const experiences = ['신입', ...Array.from({ length: 9 }, (_, i) => `${i + 1}년`), '10년 이상'];
   const regions = ['원주', '서울 수도권', '원주외 강원지역', '충북'];
 
   return (
@@ -4725,8 +3391,8 @@ export default function SupportForm() {
         <div className="flex flex-wrap gap-x-4 gap-y-2">
             {regions.map(region => (
                 <div key={region} className="flex items-center space-x-2">
-                    <Checkbox id={`region-${'${'}region}`} name="region" value={region} />
-                    <Label htmlFor={`region-${'${'}region}`} className="font-normal">{region}</Label>
+                    <Checkbox id={`region-${region}`} name="region" value={region} />
+                    <Label htmlFor={`region-${region}`} className="font-normal">{region}</Label>
                 </div>
             ))}
         </div>
@@ -4769,7 +3435,7 @@ This would be a very large file.네, 알겠습니다. 이제 파일이 2개가 �
 
 제가 "기존 파일을 삭제한다"고 말씀드렸지만, 실제로는 파일의 내용을 완전히 비워서 사실상 삭제된 것과 같은 효과를 내도록 처리했습니다. 그래서 결과적으로는
 
-1.  **`docs/project-backup_250729.md`**: 새로 생성된 백업 파일
+1.  **`docs/project-backup_250728.md`**: 새로 생성된 백업 파일
 2.  **`docs/project-backup.md`**: 내용이 비워진 기존 백업 파일
 
 이렇게 2개의 파일에 변경사항이 적용된 것입니다. 혼란스럽게 설명해 드려 죄송합니다.
