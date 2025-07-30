@@ -1,5 +1,6 @@
 'use server';
 
+import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 
@@ -26,10 +27,15 @@ export async function login(prevState: any, formData: FormData): Promise<LoginSt
 
     const { username, password } = parsed.data;
     
-    // Using hardcoded credentials for stability.
-    // In a real app, these would come from Firebase Secret Manager.
-    const adminUsername = 'admin';
-    const adminPassword = 'password';
+    // In production, these values come from Secret Manager via process.env
+    // In local dev, they come from the .env file
+    const adminUsername = process.env.CARECONNECT_ADMIN_USERNAME;
+    const adminPassword = process.env.CARECONNECT_ADMIN_PASSWORD;
+
+    if (!adminUsername || !adminPassword) {
+      console.error('Admin credentials are not set in the environment.');
+      return { error: '서버에 관리자 정보가 설정되지 않았습니다. 관리자에게 문의하세요.' };
+    }
 
     if (username !== adminUsername || password !== adminPassword) {
       console.log(`Login failed. Input: '${username}', Expected: '${adminUsername}'`);
@@ -62,6 +68,5 @@ export async function logout() {
      console.error('Logout failed:', error);
   }
   // This redirect on logout is safe and standard.
-  const { redirect } = await import('next/navigation');
   redirect('/login');
 }
