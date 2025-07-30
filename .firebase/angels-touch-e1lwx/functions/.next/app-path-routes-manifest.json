@@ -1,11 +1,11 @@
 {
   "/_not-found/page": "/_not-found",
-  "/api/caregivers/route": "/api/caregivers",
   "/favicon.ico/route": "/favicon.ico",
-  "/admin/page": "/admin",
+  "/api/caregivers/route": "/api/caregivers",
+  "/login/page": "/login",
   "/inquiry/page": "/inquiry",
   "/insurance-claim/page": "/insurance-claim",
-  "/login/page": "/login",
-  "/page": "/",
-  "/support/page": "/support"
+  "/support/page": "/support",
+  "/admin/page": "/admin",
+  "/page": "/"
 }
