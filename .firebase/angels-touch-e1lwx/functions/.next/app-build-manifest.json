@@ -39,17 +39,6 @@
       "static/chunks/490-3580250c2fd6cafd.js",
       "static/chunks/app/admin/page-3393135484604b31.js"
     ],
-    "/insurance-claim/page": [
-      "static/chunks/webpack-1ac7b17f3b89debb.js",
-      "static/chunks/4bd1b696-845b450aa0efa924.js",
-      "static/chunks/684-11eec746ec70a8d4.js",
-      "static/chunks/main-app-9f4f66c0efa5e0b9.js",
-      "static/chunks/172-00810851682d444e.js",
-      "static/chunks/889-869bee6d9da21e19.js",
-      "static/chunks/355-bfce989df94658a4.js",
-      "static/chunks/704-20895aef9e1ec097.js",
-      "static/chunks/app/insurance-claim/page-1dfab770087f7c36.js"
-    ],
     "/inquiry/page": [
       "static/chunks/webpack-1ac7b17f3b89debb.js",
       "static/chunks/4bd1b696-845b450aa0efa924.js",
@@ -68,7 +57,7 @@
       "static/chunks/172-00810851682d444e.js",
       "static/chunks/app/login/page-4adf03522522b742.js"
     ],
-    "/support/page": [
+    "/insurance-claim/page": [
       "static/chunks/webpack-1ac7b17f3b89debb.js",
       "static/chunks/4bd1b696-845b450aa0efa924.js",
       "static/chunks/684-11eec746ec70a8d4.js",
@@ -76,11 +65,8 @@
       "static/chunks/172-00810851682d444e.js",
       "static/chunks/889-869bee6d9da21e19.js",
       "static/chunks/355-bfce989df94658a4.js",
-      "static/chunks/991-6a7728ef65401902.js",
-      "static/chunks/348-8acf93c702d6b5ab.js",
-      "static/chunks/668-67243cc6e078accf.js",
-      "static/chunks/490-3580250c2fd6cafd.js",
-      "static/chunks/app/support/page-1df82e9347ec7d16.js"
+      "static/chunks/704-20895aef9e1ec097.js",
+      "static/chunks/app/insurance-claim/page-1dfab770087f7c36.js"
     ],
     "/page": [
       "static/chunks/webpack-1ac7b17f3b89debb.js",
@@ -96,6 +82,20 @@
       "static/chunks/388-530a51370b538eeb.js",
       "static/chunks/490-3580250c2fd6cafd.js",
       "static/chunks/app/page-8592745d16865e64.js"
+    ],
+    "/support/page": [
+      "static/chunks/webpack-1ac7b17f3b89debb.js",
+      "static/chunks/4bd1b696-845b450aa0efa924.js",
+      "static/chunks/684-11eec746ec70a8d4.js",
+      "static/chunks/main-app-9f4f66c0efa5e0b9.js",
+      "static/chunks/172-00810851682d444e.js",
+      "static/chunks/889-869bee6d9da21e19.js",
+      "static/chunks/355-bfce989df94658a4.js",
+      "static/chunks/991-6a7728ef65401902.js",
+      "static/chunks/348-8acf93c702d6b5ab.js",
+      "static/chunks/668-67243cc6e078accf.js",
+      "static/chunks/490-3580250c2fd6cafd.js",
+      "static/chunks/app/support/page-1df82e9347ec7d16.js"
     ]
   }
 }

@@ -3,9 +3,9 @@
   "/api/caregivers/route": "/api/caregivers",
   "/favicon.ico/route": "/favicon.ico",
   "/admin/page": "/admin",
-  "/insurance-claim/page": "/insurance-claim",
   "/inquiry/page": "/inquiry",
   "/login/page": "/login",
-  "/support/page": "/support",
-  "/page": "/"
+  "/insurance-claim/page": "/insurance-claim",
+  "/page": "/",
+  "/support/page": "/support"
 }
