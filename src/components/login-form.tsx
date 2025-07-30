@@ -20,7 +20,6 @@ function SubmitButton() {
 }
 
 export default function LoginForm() {
-  // The state now can be { error: string } or { success: true }
   const [state, formAction] = useActionState(login, undefined);
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
@@ -30,7 +29,7 @@ export default function LoginForm() {
 
     if (state.success) {
       // On success, redirect the user using client-side navigation.
-      // This is the most reliable way to handle redirection after a server action.
+      // This is the most reliable way to handle redirection.
       window.location.href = '/admin';
     } else if (state.error) {
       toast({
