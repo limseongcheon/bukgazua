@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, FormEvent } from 'react';
@@ -16,7 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Calendar as CalendarIcon } from 'lucide-react';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
-const EditCaregiverDialog = ({ 
+const EditCaregiverDialog = React.memo(({ 
   caregiver, 
   onEditSuccess,
   onCancel
@@ -145,6 +146,7 @@ const EditCaregiverDialog = ({
       </form>
     </DialogContent>
   );
-};
+});
 EditCaregiverDialog.displayName = 'EditCaregiverDialog';
+
 export default EditCaregiverDialog;

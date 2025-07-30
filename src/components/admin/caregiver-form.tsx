@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useRef, FormEvent } from 'react';
@@ -16,7 +17,7 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Calendar as CalendarIcon } from 'lucide-react';
 
-const CaregiverForm = ({ onSuccess }: { onSuccess: (newCaregiver: Caregiver) => void }) => {
+const CaregiverForm = React.memo(({ onSuccess }: { onSuccess: (newCaregiver: Caregiver) => void }) => {
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -80,7 +81,7 @@ const CaregiverForm = ({ onSuccess }: { onSuccess: (newCaregiver: Caregiver) => 
         if (result.success && result.newCaregiver) {
             toast({
                 title: '성공',
-                description: `'${result.newCaregiver.name}' 님이 성공적으로 등록되었습니다.`,
+                description: `'${'${'}result.newCaregiver.name}' 님이 성공적으로 등록되었습니다.`,
             });
             formRef.current?.reset();
             setBirthDate(undefined);
@@ -217,6 +218,6 @@ const CaregiverForm = ({ onSuccess }: { onSuccess: (newCaregiver: Caregiver) => 
         </form>
     </div>
   );
-};
+});
 CaregiverForm.displayName = 'CaregiverForm';
 export default CaregiverForm;

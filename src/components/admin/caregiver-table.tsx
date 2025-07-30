@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { memo } from 'react';
@@ -129,7 +130,7 @@ const CaregiverTable = ({
                               <Checkbox 
                                   onCheckedChange={(checked) => onSelectRow(caregiver.id, checked)}
                                   checked={selectedRowIds.includes(caregiver.id)}
-                                  aria-label={`${caregiver.name} 선택`}
+                                  aria-label={`${'${'}caregiver.name} 선택`}
                               />
                           </TableCell>
                           <TableCell>
