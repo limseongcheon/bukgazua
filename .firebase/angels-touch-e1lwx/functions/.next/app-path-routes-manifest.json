@@ -4,8 +4,8 @@
   "/favicon.ico/route": "/favicon.ico",
   "/admin/page": "/admin",
   "/inquiry/page": "/inquiry",
-  "/login/page": "/login",
   "/insurance-claim/page": "/insurance-claim",
+  "/login/page": "/login",
   "/page": "/",
   "/support/page": "/support"
 }

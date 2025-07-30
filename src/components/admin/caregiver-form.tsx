@@ -218,5 +218,5 @@ const CaregiverForm = ({ onSuccess }: { onSuccess: (newCaregiver: Caregiver) => 
     </div>
   );
 };
-
+CaregiverForm.displayName = 'CaregiverForm';
 export default CaregiverForm;

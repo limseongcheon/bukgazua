@@ -184,5 +184,5 @@ const CaregiverTable = ({
         </TooltipProvider>
     );
 };
-
+CaregiverTable.displayName = 'CaregiverTable';
 export default CaregiverTable;

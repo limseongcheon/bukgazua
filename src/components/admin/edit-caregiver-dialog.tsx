@@ -146,5 +146,5 @@ const EditCaregiverDialog = ({
     </DialogContent>
   );
 };
-
+EditCaregiverDialog.displayName = 'EditCaregiverDialog';
 export default EditCaregiverDialog;

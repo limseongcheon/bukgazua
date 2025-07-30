@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useRef, FormEvent, useCallback } from 'react';
+import React, { useState, useMemo, useRef, useCallback } from 'react';
 import { format, addDays, differenceInDays, startOfDay } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import type { Caregiver } from '@/types/caregiver-types';
@@ -15,16 +15,14 @@ const UnavailableDatesManager = ({ caregiver, onEditSuccess }: { caregiver: Care
     const [isLoading, setIsLoading] = useState(false);
     const lastSelectedDay = useRef<Date | null>(null);
 
-    // Use string representations ('yyyy-MM-dd') for state to avoid timezone issues
     const [unavailableDateStrings, setUnavailableDateStrings] = useState<Set<string>>(
         new Set((caregiver.unavailableDates || []).map(d => format(startOfDay(new Date(d)), 'yyyy-MM-dd')))
     );
 
-    // Convert string set to Date array for the calendar component
     const unavailableDates = useMemo(() => Array.from(unavailableDateStrings).map(dStr => new Date(dStr)), [unavailableDateStrings]);
   
     const handleDayClick = useCallback((day: Date | undefined, modifiers: { selected?: boolean }, e: React.MouseEvent) => {
-        if (!day) return; // Ignore undefined day clicks
+        if (!day) return;
 
         const dayStr = format(day, 'yyyy-MM-dd');
         let newUnavailableStrings: Set<string>;
@@ -41,7 +39,6 @@ const UnavailableDatesManager = ({ caregiver, onEditSuccess }: { caregiver: Care
             }
             newUnavailableStrings = currentStrings;
         } else {
-            // Regular click toggles a single day
             const currentStrings = new Set(unavailableDateStrings);
             if (currentStrings.has(dayStr)) {
                 currentStrings.delete(dayStr);
@@ -53,18 +50,15 @@ const UnavailableDatesManager = ({ caregiver, onEditSuccess }: { caregiver: Care
 
         lastSelectedDay.current = day;
         
-        // Update local state immediately for responsiveness
         setUnavailableDateStrings(newUnavailableStrings);
-        
-        // Send update to server
         updateDatesOnServer(Array.from(newUnavailableStrings));
-    }, [unavailableDateStrings]);
+    }, [unavailableDateStrings, updateDatesOnServer]);
 
     const handleClearDates = useCallback(() => {
         setUnavailableDateStrings(new Set());
         updateDatesOnServer([]);
         lastSelectedDay.current = null;
-    }, []);
+    }, [updateDatesOnServer]);
     
     const updateDatesOnServer = useCallback(async (datesAsStrings: string[]) => {
         setIsLoading(true);
@@ -83,12 +77,10 @@ const UnavailableDatesManager = ({ caregiver, onEditSuccess }: { caregiver: Care
             toast({ title: '성공', description: '근무 불가 날짜가 업데이트되었습니다.' });
             onEditSuccess(result.updatedCaregiver);
 
-            // Sync state with server response to be safe
             setUnavailableDateStrings(new Set(result.updatedCaregiver.unavailableDates || []));
 
         } catch (err: any) {
             toast({ variant: 'destructive', title: '오류', description: err.message });
-            // Revert state on failure
             setUnavailableDateStrings(new Set((caregiver.unavailableDates || []).map(d => format(startOfDay(new Date(d)), 'yyyy-MM-dd'))));
         } finally {
             setIsLoading(false);
@@ -132,5 +124,5 @@ const UnavailableDatesManager = ({ caregiver, onEditSuccess }: { caregiver: Care
         </Popover>
     );
 };
-
+UnavailableDatesManager.displayName = 'UnavailableDatesManager';
 export default UnavailableDatesManager;
