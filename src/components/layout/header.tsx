@@ -11,7 +11,7 @@ export default function Header() {
     { href: '/#find-caregiver', label: '간병인 찾기', variant: 'outline' as const, className: 'border-accent text-foreground hover:bg-accent hover:text-accent-foreground' },
     { href: '/insurance-claim', label: '보험서류 청구', variant: 'outline' as const, className: 'border-accent text-foreground hover:bg-accent hover:text-accent-foreground' },
     { href: '/inquiry', label: '일반 문의', variant: 'outline' as const, className: 'border-accent text-foreground hover:bg-accent hover:text-accent-foreground' },
-    { href: '/support', label: '간병인 지원', variant: 'outline' as const, className: 'border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground' },
+    { href: '/support', label: '간병인 지원', variant: 'outline' as const, className: 'border-destructive text-foreground hover:bg-destructive hover:text-destructive-foreground' },
   ];
 
   return (
