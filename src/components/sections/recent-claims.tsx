@@ -11,37 +11,25 @@ interface Claim {
   date: string;
 }
 
-const names = ['김O민', '이O서', '박O준', '최O윤', '정O아', '강O진', '조O현', '윤O솔', '장O호', '임O연'];
-const claimTypes = ['병원 간병비', '가족 간병비'];
-
-const generateDailyClaims = (): Claim[] => {
-  const today = new Date();
-  const claims: Claim[] = [];
-  // Use day of the year as a seed to make the list different each day
-  const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
-
-  for (let i = 0; i < 20; i++) {
-    const seed = (dayOfYear + i) * 3;
-    const name = names[seed % names.length];
-    const claimType = claimTypes[seed % claimTypes.length];
-    const date = format(subDays(today, i % 5), 'MM.dd', { locale: ko });
-    claims.push({ name: `${name}님`, claimType, date });
-  }
-  return claims;
-};
+// Pre-defined static data to avoid client-side computation and hydration errors.
+const staticClaims: Claim[] = [
+  { name: '김O민님', claimType: '병원 간병비', date: format(subDays(new Date(), 1), 'MM.dd', { locale: ko }) },
+  { name: '이O서님', claimType: '가족 간병비', date: format(subDays(new Date(), 1), 'MM.dd', { locale: ko }) },
+  { name: '박O준님', claimType: '병원 간병비', date: format(subDays(new Date(), 2), 'MM.dd', { locale: ko }) },
+  { name: '최O윤님', claimType: '가족 간병비', date: format(subDays(new Date(), 2), 'MM.dd', { locale: ko }) },
+  { name: '정O아님', claimType: '병원 간병비', date: format(subDays(new Date(), 3), 'MM.dd', { locale: ko }) },
+  { name: '강O진님', claimType: '가족 간병비', date: format(subDays(new Date(), 3), 'MM.dd', { locale: ko }) },
+  { name: '조O현님', claimType: '병원 간병비', date: format(subDays(new Date(), 4), 'MM.dd', { locale: ko }) },
+  { name: '윤O솔님', claimType: '가족 간병비', date: format(subDays(new Date(), 4), 'MM.dd', { locale: ko }) },
+  { name: '장O호님', claimType: '병원 간병비', date: format(subDays(new Date(), 5), 'MM.dd', { locale: ko }) },
+  { name: '임O연님', claimType: '가족 간병비', date: format(subDays(new Date(), 5), 'MM.dd', { locale: ko }) },
+  { name: '한O우님', claimType: '병원 간병비', date: format(subDays(new Date(), 6), 'MM.dd', { locale: ko }) },
+  { name: '오O서님', claimType: '가족 간병비', date: format(subDays(new Date(), 6), 'MM.dd', { locale: ko }) },
+];
 
 
 export default function RecentClaims() {
-  const [claims, setClaims] = useState<Claim[]>([]);
-
-  useEffect(() => {
-    // This runs only on the client-side to prevent hydration mismatch
-    setClaims(generateDailyClaims());
-  }, []);
-
-  if (claims.length === 0) {
-    return null; // Don't render server-side or until claims are generated
-  }
+  const [claims, setClaims] = useState<Claim[]>(staticClaims);
 
   // Duplicate the list for a seamless loop
   const displayClaims = [...claims, ...claims];
