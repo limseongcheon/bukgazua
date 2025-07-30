@@ -60,4 +60,5 @@ export async function logout() {
   } catch(error) {
      console.error('Logout failed:', error);
   }
-  redirect('/
+  redirect('/login');
+}
