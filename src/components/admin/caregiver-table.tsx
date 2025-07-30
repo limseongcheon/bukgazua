@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useState, useMemo, useRef, FormEvent, useCallback } from 'react';
+import React, { memo } from 'react';
 import { format } from 'date-fns';
 import type { Caregiver } from '@/types/caregiver-types';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useToast } from '@/hooks/use-toast';
 import { Loader2, Info, Pencil, Trash2 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
@@ -14,7 +13,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import CaregiverStatusSelect from '@/components/admin/caregiver-status-select';
 import UnavailableDatesManager from '@/components/admin/unavailable-dates-manager';
 
-const ActionToolbar = React.memo(({ selectedCount, isDeleting, onDelete }: { selectedCount: number, isDeleting: boolean, onDelete: () => void }) => {
+const ActionToolbar = memo(({ selectedCount, isDeleting, onDelete }: { selectedCount: number, isDeleting: boolean, onDelete: () => void }) => {
   if (selectedCount === 0) return null;
 
   return (
