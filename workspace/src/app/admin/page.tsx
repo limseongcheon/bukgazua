@@ -275,6 +275,7 @@ const ActionToolbar = React.memo(({ selectedCount, isDeleting, onDelete }: { sel
 });
 ActionToolbar.displayName = 'ActionToolbar';
 
+// This component defines the scroll behavior.
 const CaregiverTable = React.memo(({ 
     caregivers, 
     selectedRowIds,
@@ -546,14 +547,16 @@ const UnavailableDatesManager = React.memo(({ caregiver, onEditSuccess }: { care
     const [isLoading, setIsLoading] = useState(false);
     const lastSelectedDay = useRef<Date | null>(null);
 
+    // Use string representations ('yyyy-MM-dd') for state to avoid timezone issues
     const [unavailableDateStrings, setUnavailableDateStrings] = useState<Set<string>>(
         new Set((caregiver.unavailableDates || []).map(d => format(startOfDay(new Date(d)), 'yyyy-MM-dd')))
     );
 
+    // Convert string set to Date array for the calendar component
     const unavailableDates = useMemo(() => Array.from(unavailableDateStrings).map(dStr => new Date(dStr)), [unavailableDateStrings]);
   
     const handleDayClick = useCallback((day: Date | undefined, modifiers: { selected?: boolean }, e: React.MouseEvent) => {
-        if (!day) return;
+        if (!day) return; // Ignore undefined day clicks
 
         const dayStr = format(day, 'yyyy-MM-dd');
         let newUnavailableStrings: Set<string>;
@@ -570,6 +573,7 @@ const UnavailableDatesManager = React.memo(({ caregiver, onEditSuccess }: { care
             }
             newUnavailableStrings = currentStrings;
         } else {
+            // Regular click toggles a single day
             const currentStrings = new Set(unavailableDateStrings);
             if (currentStrings.has(dayStr)) {
                 currentStrings.delete(dayStr);
@@ -581,8 +585,10 @@ const UnavailableDatesManager = React.memo(({ caregiver, onEditSuccess }: { care
 
         lastSelectedDay.current = day;
         
+        // Update local state immediately for responsiveness
         setUnavailableDateStrings(newUnavailableStrings);
         
+        // Send update to server
         updateDatesOnServer(Array.from(newUnavailableStrings));
     }, [unavailableDateStrings]);
 
@@ -609,10 +615,12 @@ const UnavailableDatesManager = React.memo(({ caregiver, onEditSuccess }: { care
             toast({ title: '성공', description: '근무 불가 날짜가 업데이트되었습니다.' });
             onEditSuccess(result.updatedCaregiver);
 
+            // Sync state with server response to be safe
             setUnavailableDateStrings(new Set(result.updatedCaregiver.unavailableDates || []));
 
         } catch (err: any) {
             toast({ variant: 'destructive', title: '오류', description: err.message });
+            // Revert state on failure
             setUnavailableDateStrings(new Set((caregiver.unavailableDates || []).map(d => format(startOfDay(new Date(d)), 'yyyy-MM-dd'))));
         } finally {
             setIsLoading(false);
