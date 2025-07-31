@@ -1,8 +1,7 @@
 import Link from 'next/link';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { cn } from '@/lib/utils';
 import { AppLogo } from '@/components/layout/app-logo';
 
 export default function Header() {
@@ -18,15 +17,17 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <AppLogo />
-        
+
+        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-1">
           {navItems.map((item) => (
-            <Button asChild variant="ghost" className="text-foreground/80 hover:text-foreground hover:bg-muted" key={item.href + item.label}>
+            <Button asChild variant="ghost" className="text-foreground/80 hover:text-foreground hover:bg-muted" key={item.href}>
               <Link href={item.href}>{item.label}</Link>
             </Button>
           ))}
         </nav>
 
+        {/* Mobile Menu */}
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger asChild>
@@ -43,18 +44,16 @@ export default function Header() {
                  <SheetTitle className="sr-only">메인 메뉴</SheetTitle>
               </SheetHeader>
               <nav className="grid gap-6 text-lg font-medium mt-6">
-                {navItems.map((item) => {
-                  return (
-                    <SheetClose asChild key={item.href + item.label}>
-                      <Link
-                        href={item.href}
-                        className="text-lg font-medium text-muted-foreground hover:text-foreground"
-                        >
-                        {item.label}
-                      </Link>
-                    </SheetClose>
-                  );
-                })}
+                {navItems.map((item) => (
+                  <SheetClose asChild key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="text-lg font-medium text-muted-foreground hover:text-foreground"
+                    >
+                      {item.label}
+                    </Link>
+                  </SheetClose>
+                ))}
               </nav>
             </SheetContent>
           </Sheet>
