@@ -1,40 +1,46 @@
-# Dependencies
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
 /node_modules
 /.pnp
 .pnp.js
-.pnp.loader.mjs
-pnpm-lock.yaml
 
-# Build outputs
+# testing
+/coverage
+
+# next.js
 /.next/
 /out/
-/build/
 
-# Cache
-.eslintcache
-.stylelintcache
-.cache/
-.npm/
-.yarn/
+# production
+/build
 
-# Logs
-logs
-*.log
+# misc
+.DS_Store
+*.pem
+
+# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
-# Local env files
+# local env files
 .env*.local
 
-# IDEs
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Firebase Emulators
+*.log
+.firebase/emulators.log
+.firebase/
+
+# Editor directories and files
 .idea
 *.suo
 *.ntvs*
@@ -42,16 +48,5 @@ lerna-debug.log*
 *.sln
 *.sw?
 
-# Misc
-.DS_Store
-Thumbs.db
-
-# Firebase
-.firebase/
-firebase-debug.log
-database-debug.log
+# Custom
 *.pack
-
-# Genkit
-/src/ai/.genkit/
-.genkit-cache/
