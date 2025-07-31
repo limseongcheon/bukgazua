@@ -6,13 +6,24 @@ runConfig:
   # more instances in response to increased traffic.
   maxInstances: 1
 env:
+  # Admin credentials
   - variable: CARECONNECT_ADMIN_USERNAME
-    value: "admin" # 운영 환경에서 사용할 관리자 아이디를 입력하세요.
+    value: "admin"
   - variable: CARECONNECT_ADMIN_PASSWORD
-    secret: # 여기에 실제 운영 환경의 관리자 비밀번호를 입력하세요.
+    secret: CARECONNECT_ADMIN_PASSWORD
+
+  # Resend Email API credentials
   - variable: CARECONNECT_RESEND_API_KEY
-    secret: # 여기에 실제 Resend API 키를 입력하세요.
+    secret: CARECONNECT_RESEND_API_KEY
   - variable: CARECONNECT_EMAIL_FROM
-    value: "onboarding@resend.dev" # Resend에서 확인된 발신 이메일 주소를 입력하세요.
+    value: "onboarding@resend.dev"
+
+  # Admin notification emails
   - variable: CARECONNECT_ADMIN_EMAIL_1
-    value: "" # 알림을 받을 관리자 이메일 주소 1을 입력하세요.
+    secret: CARECONNECT_ADMIN_EMAIL_1
+
+  # Turso Database credentials
+  - variable: TURSO_DATABASE_URL
+    secret: TURSO_DATABASE_URL
+  - variable: TURSO_AUTH_TOKEN
+    secret: TURSO_AUTH_TOKEN
