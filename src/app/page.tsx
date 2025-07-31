@@ -9,7 +9,6 @@ import RecentClaims from '@/components/sections/recent-claims';
 export default function Home() {
   return (
     <>
-      <h1 className="text-5xl font-bold text-center py-8 bg-yellow-200 text-black">최종 테스트</h1>
       <Hero />
       <Services />
       <HowItWorks />

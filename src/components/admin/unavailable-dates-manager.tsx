@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useRef, useCallback } from 'react';
@@ -59,13 +58,13 @@ const UnavailableDatesManager = React.memo(({ caregiver, onEditSuccess }: { care
         
         // Send update to server
         updateDatesOnServer(Array.from(newUnavailableStrings));
-    }, [unavailableDateStrings]);
+    }, [unavailableDateStrings, updateDatesOnServer]);
 
     const handleClearDates = useCallback(() => {
         setUnavailableDateStrings(new Set());
         updateDatesOnServer([]);
         lastSelectedDay.current = null;
-    }, []);
+    }, [updateDatesOnServer]);
     
     const updateDatesOnServer = useCallback(async (datesAsStrings: string[]) => {
         setIsLoading(true);
