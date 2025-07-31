@@ -3441,3 +3441,765 @@ This would be a very large file.네, 알겠습니다. 이제 파일이 2개가 �
 이렇게 2개의 파일에 변경사항이 적용된 것입니다. 혼란스럽게 설명해 드려 죄송합니다.
 
 이제 날짜가 포함된 새 파일에 모든 코드가 안전하게 백업되었습니다.
+```
+
+- docs/project-backup_250729.md:
+```
+
+```
+- workspace/src/app/admin/page.tsx:
+```tsx
+'use client';
+
+import { useEffect, useState, useMemo, useRef, FormEvent, useCallback } from 'react';
+import React from 'react';
+import Image from 'next/image';
+import { format, addDays, differenceInDays, startOfDay } from 'date-fns';
+import { ko } from 'date-fns/locale';
+import type { Caregiver } from '@/types/caregiver-types';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Textarea } from '@/components/ui/textarea';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
+import LogoutButton from '@/components/admin/logout-button';
+import { useToast } from '@/hooks/use-toast';
+import { Loader2, Calendar as CalendarIcon, Trash2, Pencil, X, Info, Search } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Checkbox } from '@/components/ui/checkbox';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import CaregiverStatusSelect from '@/components/admin/caregiver-status-select';
+import CaregiverForm from '@/components/admin/caregiver-form';
+import CaregiverTable from '@/components/admin/caregiver-table';
+import EditCaregiverDialog from '@/components/admin/edit-caregiver-dialog';
+
+// Main AdminPage Component
+export default function AdminPage() {
+  const [caregivers, setCaregivers] = useState<Caregiver[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("register");
+  const [searchTerm, setSearchTerm] = useState('');
+  const { toast } = useToast();
+
+  const [selectedRowIds, setSelectedRowIds] = useState<number[]>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [editingCaregiver, setEditingCaregiver] = useState<Caregiver | null>(null);
+
+  useEffect(() => {
+    const fetchCaregivers = async () => {
+        try {
+          setIsLoading(true);
+          const response = await fetch('/api/caregivers');
+          const data = await response.json();
+          if(!response.ok) {
+              throw new Error(data.error || '간병인 목록을 불러오지 못했습니다.')
+          }
+          const sortedData = (data || []).sort((a: Caregiver, b: Caregiver) => (b.id || 0) - (a.id || 0));
+          setCaregivers(sortedData);
+        } catch (error: any) {
+          toast({
+            variant: 'destructive',
+            title: '오류',
+            description: error.message || '간병인 목록을 불러오지 못했습니다.',
+          });
+          setCaregivers([]);
+        } finally {
+          setIsLoading(false);
+        }
+    };
+    fetchCaregivers();
+  }, [toast]);
+
+  const filteredCaregivers = useMemo(() => {
+    if (!searchTerm) return caregivers;
+    return caregivers.filter(caregiver =>
+      caregiver.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [caregivers, searchTerm]);
+
+  const handleAddSuccess = useCallback((newCaregiver: Caregiver) => {
+    setCaregivers((prev) => [newCaregiver, ...prev].sort((a,b) => (b.id || 0) - (a.id || 0)));
+    setActiveTab("manage");
+  }, []);
+
+  const handleEditSuccess = useCallback((updatedCaregiver: Caregiver) => {
+    setCaregivers(prev => prev.map(c => c.id === updatedCaregiver.id ? updatedCaregiver : c));
+    setEditingCaregiver(null);
+  }, []);
+
+  const handleDeleteSuccess = useCallback((deletedIds: number[]) => {
+      setCaregivers(prev => prev.filter(c => !deletedIds.includes(c.id)));
+  }, []);
+
+  const handleSelectAllRows = useCallback((checked: boolean | string) => {
+    setSelectedRowIds(checked ? filteredCaregivers.map(c => c.id) : []);
+  }, [filteredCaregivers]);
+
+  const handleSelectRow = useCallback((id: number, checked: boolean | string) => {
+      setSelectedRowIds(prev => checked ? [...prev, id] : prev.filter(rowId => rowId !== id));
+  }, []);
+
+  const handleDeleteSelectedRows = useCallback(async () => {
+      setIsDeleting(true);
+      try {
+          const response = await fetch('/api/caregivers', {
+              method: 'DELETE',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ ids: selectedRowIds }),
+          });
+          const result = await response.json();
+          if (!response.ok) {
+              throw new Error(result.error || '삭제 중 오류가 발생했습니다.');
+          }
+          toast({
+              title: "성공",
+              description: `${result.count}명의 간병인이 삭제되었습니다.`
+          });
+          handleDeleteSuccess(selectedRowIds);
+          setSelectedRowIds([]);
+      } catch (err: any) {
+           toast({
+              variant: 'destructive',
+              title: '오류',
+              description: err.message,
+          });
+      } finally {
+          setIsDeleting(false);
+      }
+  }, [selectedRowIds, handleDeleteSuccess, toast]);
+  
+  const handleEditRequest = useCallback((caregiver: Caregiver) => {
+    setEditingCaregiver(caregiver);
+  }, []);
+
+  const handleCancelEdit = useCallback(() => {
+    setEditingCaregiver(null);
+  }, []);
+
+  return (
+    <div className="container py-10">
+      <div className="flex justify-between items-center mb-10">
+        <div>
+          <h1 className="text-4xl font-bold">관리자 페이지</h1>
+          <p className="text-muted-foreground mt-2">간병인 정보를 등록하고 관리합니다.</p>
+        </div>
+        <LogoutButton />
+      </div>
+      
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="register">새 간병인 등록</TabsTrigger>
+          <TabsTrigger value="manage">간병인 관리</TabsTrigger>
+        </TabsList>
+        <TabsContent value="register" className="mt-6">
+            <CaregiverForm onSuccess={handleAddSuccess} />
+        </TabsContent>
+        <TabsContent value="manage" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>등록된 간병인 목록</CardTitle>
+              <div className="flex justify-between items-center gap-4 pt-2">
+                <CardDescription>{caregivers.length}명의 간병인이 등록되어 있습니다.</CardDescription>
+                <div className="relative w-full max-w-xs">
+                  <Input 
+                    placeholder="이름으로 검색..." 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <div className="flex justify-center items-center py-10">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : (
+                <CaregiverTable 
+                    caregivers={filteredCaregivers} 
+                    selectedRowIds={selectedRowIds}
+                    isDeleting={isDeleting}
+                    onSelectAll={handleSelectAllRows}
+                    onSelectRow={handleSelectRow}
+                    onDeleteSelected={handleDeleteSelectedRows}
+                    onEditSuccess={handleEditSuccess} 
+                    onEditRequest={handleEditRequest}
+                />
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+      
+      <Dialog open={!!editingCaregiver} onOpenChange={(open) => !open && handleCancelEdit()}>
+        {editingCaregiver && (
+           <EditCaregiverDialog 
+              caregiver={editingCaregiver} 
+              onEditSuccess={handleEditSuccess}
+              onCancel={handleCancelEdit}
+           />
+        )}
+      </Dialog>
+    </div>
+  );
+}
+```
+- workspace/src/components/admin/unavailable-dates-manager.tsx:
+```tsx
+'use client';
+
+import React, { useState, useMemo, useRef, useCallback } from 'react';
+import { format, addDays, differenceInDays, startOfDay } from 'date-fns';
+import { ko } from 'date-fns/locale';
+import type { Caregiver } from '@/types/caregiver-types';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { useToast } from '@/hooks/use-toast';
+import { Loader2, Calendar as CalendarIcon } from 'lucide-react';
+
+const UnavailableDatesManager = React.memo(({ caregiver, onEditSuccess }: { caregiver: Caregiver, onEditSuccess: (c: Caregiver) => void }) => {
+    const { toast } = useToast();
+    const [isLoading, setIsLoading] = useState(false);
+    const lastSelectedDay = useRef<Date | null>(null);
+
+    // Use string representations ('yyyy-MM-dd') for state to avoid timezone issues
+    const [unavailableDateStrings, setUnavailableDateStrings] = useState<Set<string>>(
+        new Set((caregiver.unavailableDates || []).map(d => format(startOfDay(new Date(d)), 'yyyy-MM-dd')))
+    );
+
+    // Convert string set to Date array for the calendar component
+    const unavailableDates = useMemo(() => Array.from(unavailableDateStrings).map(dStr => new Date(dStr)), [unavailableDateStrings]);
+  
+    const handleDayClick = useCallback((day: Date | undefined, modifiers: { selected?: boolean }, e: React.MouseEvent) => {
+        if (!day) return; // Ignore undefined day clicks
+
+        const dayStr = format(day, 'yyyy-MM-dd');
+        let newUnavailableStrings: Set<string>;
+
+        if (e.shiftKey && lastSelectedDay.current) {
+            const currentStrings = new Set(unavailableDateStrings);
+            const start = lastSelectedDay.current < day ? lastSelectedDay.current : day;
+            const end = lastSelectedDay.current > day ? lastSelectedDay.current : day;
+            const daysInRange = differenceInDays(end, start);
+            
+            for(let i = 0; i <= daysInRange; i++) {
+                const dateInRangeStr = format(addDays(start, i), 'yyyy-MM-dd');
+                currentStrings.add(dateInRangeStr);
+            }
+            newUnavailableStrings = currentStrings;
+        } else {
+            // Regular click toggles a single day
+            const currentStrings = new Set(unavailableDateStrings);
+            if (currentStrings.has(dayStr)) {
+                currentStrings.delete(dayStr);
+            } else {
+                currentStrings.add(dayStr);
+            }
+            newUnavailableStrings = currentStrings;
+        }
+
+        lastSelectedDay.current = day;
+        
+        // Update local state immediately for responsiveness
+        setUnavailableDateStrings(newUnavailableStrings);
+        
+        // Send update to server
+        updateDatesOnServer(Array.from(newUnavailableStrings));
+    }, [unavailableDateStrings, updateDatesOnServer]);
+
+    const handleClearDates = useCallback(() => {
+        setUnavailableDateStrings(new Set());
+        updateDatesOnServer([]);
+        lastSelectedDay.current = null;
+    }, [updateDatesOnServer]);
+    
+    const updateDatesOnServer = useCallback(async (datesAsStrings: string[]) => {
+        setIsLoading(true);
+        try {
+            const response = await fetch(`/api/caregivers`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    id: caregiver.id,
+                    unavailableDates: datesAsStrings
+                }),
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || '날짜 업데이트 실패');
+            
+            toast({ title: '성공', description: '근무 불가 날짜가 업데이트되었습니다.' });
+            onEditSuccess(result.updatedCaregiver);
+
+            // Sync state with server response to be safe
+            setUnavailableDateStrings(new Set(result.updatedCaregiver.unavailableDates || []));
+
+        } catch (err: any) {
+            toast({ variant: 'destructive', title: '오류', description: err.message });
+            // Revert state on failure
+            setUnavailableDateStrings(new Set((caregiver.unavailableDates || []).map(d => format(startOfDay(new Date(d)), 'yyyy-MM-dd'))));
+        } finally {
+            setIsLoading(false);
+        }
+    }, [caregiver.id, caregiver.unavailableDates, onEditSuccess, toast]);
+
+    return (
+        <Popover>
+            <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full justify-start font-normal text-sm">
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {isLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                        unavailableDates.length > 0 ? `${unavailableDates.length}일 선택됨` : '날짜 선택'
+                    )}
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                    mode="multiple"
+                    min={0}
+                    selected={unavailableDates}
+                    onDayClick={handleDayClick}
+                    disabled={isLoading}
+                    locale={ko}
+                    footer={
+                      <div className="p-2 border-t flex justify-end">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={handleClearDates}
+                          disabled={isLoading || unavailableDates.length === 0}
+                        >
+                          전체 해제
+                        </Button>
+                      </div>
+                    }
+                />
+            </PopoverContent>
+        </Popover>
+    );
+});
+UnavailableDatesManager.displayName = 'UnavailableDatesManager';
+export default UnavailableDatesManager;
+```
+- workspace/src/components/admin/edit-caregiver-dialog.tsx:
+```tsx
+'use client';
+
+import React, { useState, useMemo, FormEvent } from 'react';
+import { format, startOfDay } from 'date-fns';
+import { ko } from 'date-fns/locale';
+import type { Caregiver } from '@/types/caregiver-types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
+import { Loader2, Calendar as CalendarIcon } from 'lucide-react';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+
+const EditCaregiverDialog = React.memo(({ 
+  caregiver, 
+  onEditSuccess,
+  onCancel
+}: { 
+  caregiver: Caregiver, 
+  onEditSuccess: (updatedCaregiver: Caregiver) => void,
+  onCancel: () => void 
+}) => {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string | undefined>>({});
+  const [birthDate, setBirthDate] = useState<Date | undefined>(
+    caregiver.birthDate ? startOfDay(new Date(caregiver.birthDate)) : undefined
+  );
+  const experiences = useMemo(() => ['신입', ...Array.from({ length: 9 }, (_, i) => `${i + 1}년`), '10년 이상'], []);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setErrors({});
+
+    const formData = new FormData(event.currentTarget);
+    const data = {
+        id: caregiver.id,
+        name: formData.get('name') as string,
+        phone: formData.get('phone') as string,
+        photoUrl: formData.get('photoUrl') as string,
+        birthDate: birthDate ? format(birthDate, 'yyyy-MM-dd') : undefined,
+        gender: formData.get('gender') as '남성' | '여성' | null,
+        certifications: formData.get('certifications') as string,
+        experience: formData.get('experience') as string,
+        specialNotes: formData.get('specialNotes') as string,
+    };
+
+    try {
+        const response = await fetch(`/api/caregivers`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+        const result = await response.json();
+        if (!response.ok) { throw new Error(result.error || '수정 실패'); }
+
+        toast({ title: '성공', description: '간병인 정보가 수정되었습니다.' });
+        onEditSuccess(result.updatedCaregiver);
+    } catch (err: any) {
+        setErrors({ form: err.message });
+        toast({ variant: 'destructive', title: '오류', description: err.message });
+    } finally {
+        setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <DialogContent className="sm:max-w-3xl">
+      <DialogHeader>
+        <DialogTitle>간병인 정보 수정</DialogTitle>
+        <DialogDescription>{caregiver.name} 님의 정보를 수정합니다. 변경사항을 저장해주세요.</DialogDescription>
+      </DialogHeader>
+      <form onSubmit={handleSubmit} className="max-h-[70vh] overflow-y-auto px-1">
+        <div className="space-y-6 py-4">
+             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                      <Label htmlFor="edit-name">이름<span className="text-destructive">*</span></Label>
+                      <Input id="edit-name" name="name" defaultValue={caregiver.name} required />
+                  </div>
+                  <div className="space-y-2">
+                      <Label htmlFor="edit-phone">전화번호<span className="text-destructive">*</span></Label>
+                      <Input id="edit-phone" name="phone" defaultValue={caregiver.phone} required />
+                  </div>
+              </div>
+              <div className="space-y-2">
+                  <Label htmlFor="edit-photoUrl">사진 URL</Label>
+                  <Input id="edit-photoUrl" name="photoUrl" defaultValue={caregiver.photoUrl || ''} />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                      <Label htmlFor="edit-birthDate">생년월일<span className="text-destructive">*</span></Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !birthDate && "text-muted-foreground")}>
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {birthDate ? format(birthDate, "PPP", { locale: ko }) : <span>날짜 선택</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={birthDate} onSelect={(d) => setBirthDate(d || undefined)} captionLayout="dropdown-buttons" fromYear={1940} toYear={new Date().getFullYear()} initialFocus locale={ko} /></PopoverContent>
+                      </Popover>
+                  </div>
+                  <div className="space-y-2">
+                      <Label htmlFor="edit-gender">성별<span className="text-destructive">*</span></Label>
+                      <Select name="gender" defaultValue={caregiver.gender}>
+                          <SelectTrigger><SelectValue placeholder="성별 선택" /></SelectTrigger>
+                          <SelectContent>
+                              <SelectItem value="남성">남성</SelectItem>
+                              <SelectItem value="여성">여성</SelectItem>
+                          </SelectContent>
+                      </Select>
+                  </div>
+              </div>
+              <div className="space-y-2">
+                  <Label htmlFor="edit-certifications">보유 자격증 (쉼표로 구분)</Label>
+                  <Input id="edit-certifications" name="certifications" defaultValue={caregiver.certifications || ''} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-experience">경력<span className="text-destructive">*</span></Label>
+                <Select name="experience" defaultValue={caregiver.experience}>
+                    <SelectTrigger><SelectValue placeholder="경력 선택" /></SelectTrigger>
+                    <SelectContent>
+                      {experiences.map(exp => <SelectItem key={exp} value={exp}>{exp}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                  <Label htmlFor="edit-specialNotes">특기사항</Label>
+                  <Textarea id="edit-specialNotes" name="specialNotes" defaultValue={caregiver.specialNotes || ''} rows={5} />
+              </div>
+              {errors.form && <p className="text-sm font-medium text-destructive">{errors.form}</p>}
+        </div>
+        <DialogFooter className="mt-6">
+            <DialogClose asChild><Button type="button" variant="secondary" onClick={onCancel}>취소</Button></DialogClose>
+            <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                변경사항 저장
+            </Button>
+        </DialogFooter>
+      </form>
+    </DialogContent>
+  );
+});
+EditCaregiverDialog.displayName = 'EditCaregiverDialog';
+
+export default EditCaregiverDialog;
+```
+- workspace/debug-caregiver-code.md:
+```
+
+```
+- workspace/style_debug_report.md:
+```
+
+```
+- src/app/page.tsx:
+```tsx
+import Hero from '@/components/sections/hero';
+import Services from '@/components/sections/services';
+import HowItWorks from '@/components/sections/how-it-works';
+import AiMatcher from '@/components/sections/ai-matcher';
+import Testimonials from '@/components/sections/testimonials';
+import Contact from '@/components/sections/contact';
+import RecentClaims from '@/components/sections/recent-claims';
+
+export default function Home() {
+  return (
+    <>
+      <Hero />
+      <Services />
+      <HowItWorks />
+      <AiMatcher />
+      <Testimonials />
+      <RecentClaims />
+      <Contact />
+    </>
+  );
+}
+```
+- src/app/layout.tsx:
+```tsx
+import type { Metadata } from 'next';
+import './globals.css';
+import { Toaster } from '@/components/ui/toaster';
+import Header from '@/components/layout/header';
+import Footer from '@/components/layout/footer';
+import { PT_Sans, Gowun_Dodum } from 'next/font/google';
+import { cn } from '@/lib/utils';
+
+const ptSans = PT_Sans({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-sans',
+});
+
+const gowunDodum = Gowun_Dodum({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-headline',
+});
+
+export const metadata: Metadata = {
+  title: "천사손길",
+  description: '당신에게 꼭 맞는 간병인을 찾아보세요.',
+  icons: {
+    icon: '/favicon.ico',
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="ko" suppressHydrationWarning>
+      <body className={cn("antialiased font-sans", ptSans.variable, gowunDodum.variable)}>
+        <div className="flex flex-col min-h-screen">
+          <Header />
+          <main className="flex-grow">{children}</main>
+          <Footer />
+        </div>
+        <Toaster />
+      </body>
+    </html>
+  );
+}
+```
+- tailwind.config.ts:
+```ts
+import type {Config} from 'tailwindcss';
+import { fontFamily } from "tailwindcss/defaultTheme"
+
+export default {
+  darkMode: ['class'],
+  content: [
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
+    extend: {
+      fontFamily: {
+        sans: ["var(--font-sans)", ...fontFamily.sans],
+        headline: ["var(--font-headline)", ...fontFamily.sans],
+      },
+      colors: {
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+        },
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
+        claim: {
+          DEFAULT: 'hsl(var(--claim-bg))',
+          foreground: 'hsl(var(--claim-fg))',
+        },
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+      },
+      keyframes: {
+        'accordion-down': {
+          from: {
+            height: '0',
+          },
+          to: {
+            height: 'var(--radix-accordion-content-height)',
+          },
+        },
+        'accordion-up': {
+          from: {
+            height: 'var(--radix-accordion-content-height)',
+          },
+          to: {
+            height: '0',
+          },
+        },
+        'marquee-normal': {
+            '0%': { transform: 'translateX(0)' },
+            '100%': { transform: 'translateX(-50%)' },
+        },
+      },
+      animation: {
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
+        'marquee-normal': 'marquee-normal 160s linear infinite',
+        'pause': 'running paused',
+      },
+    },
+  },
+  plugins: [require('tailwindcss-animate')],
+} satisfies Config;
+```
+- package.json:
+```json
+{
+  "name": "nextn",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 9002",
+    "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
+    "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@genkit-ai/googleai": "^1.13.0",
+    "@genkit-ai/next": "^1.13.0",
+    "@hookform/resolvers": "^4.1.3",
+    "@radix-ui/react-accordion": "^1.2.3",
+    "@radix-ui/react-alert-dialog": "^1.1.6",
+    "@radix-ui/react-avatar": "^1.1.3",
+    "@radix-ui/react-checkbox": "^1.1.4",
+    "@radix-ui/react-collapsible": "^1.1.11",
+    "@radix-ui/react-dialog": "^1.1.6",
+    "@radix-ui/react-dropdown-menu": "^2.1.6",
+    "@radix-ui/react-label": "^2.1.2",
+    "@radix-ui/react-menubar": "^1.1.6",
+    "@radix-ui/react-popover": "^1.1.6",
+    "@radix-ui/react-progress": "^1.1.2",
+    "@radix-ui/react-radio-group": "^1.2.3",
+    "@radix-ui/react-scroll-area": "^1.2.3",
+    "@radix-ui/react-select": "^2.1.6",
+    "@radix-ui/react-separator": "^1.1.2",
+    "@radix-ui/react-slider": "^1.2.3",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-switch": "^1.1.3",
+    "@radix-ui/react-tabs": "^1.1.3",
+    "@radix-ui/react-toast": "^1.2.6",
+    "@radix-ui/react-tooltip": "^1.1.8",
+    "better-sqlite3": "^11.1.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^3.6.0",
+    "dotenv": "^16.5.0",
+    "firebase": "^11.9.1",
+    "genkit": "^1.13.0",
+    "lucide-react": "^0.475.0",
+    "next": "15.3.3",
+    "patch-package": "^8.0.0",
+    "react": "^18.3.1",
+    "react-day-picker": "^8.10.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.54.2",
+    "resend": "^3.2.0",
+    "tailwind-merge": "^3.0.1",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/sqlite3": "^3.1.11",
+    "genkit-cli": "^1.13.0",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}
+```
+</changes>
