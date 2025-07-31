@@ -90,7 +90,6 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'marquee-normal': 'marquee-normal 160s linear infinite',
-        'pause': 'running paused',
       },
     },
   },
