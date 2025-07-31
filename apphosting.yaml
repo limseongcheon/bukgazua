@@ -5,3 +5,14 @@ runConfig:
   # Increase this value if you'd like to automatically spin up
   # more instances in response to increased traffic.
   maxInstances: 1
+env:
+  - variable: CARECONNECT_ADMIN_USERNAME
+    value: "admin" # 운영 환경에서 사용할 관리자 아이디를 입력하세요.
+  - variable: CARECONNECT_ADMIN_PASSWORD
+    secret: # 여기에 실제 운영 환경의 관리자 비밀번호를 입력하세요.
+  - variable: CARECONNECT_RESEND_API_KEY
+    secret: # 여기에 실제 Resend API 키를 입력하세요.
+  - variable: CARECONNECT_EMAIL_FROM
+    value: "onboarding@resend.dev" # Resend에서 확인된 발신 이메일 주소를 입력하세요.
+  - variable: CARECONNECT_ADMIN_EMAIL_1
+    value: "" # 알림을 받을 관리자 이메일 주소 1을 입력하세요.
