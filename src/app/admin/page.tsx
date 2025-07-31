@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState, useMemo, useRef, FormEvent, useCallback } from 'react';
@@ -27,8 +26,8 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import CaregiverStatusSelect from '@/components/admin/caregiver-status-select';
-// import CaregiverForm from '@/components/admin/caregiver-form';
-// import CaregiverTable from '@/components/admin/caregiver-table';
+import CaregiverForm from '@/components/admin/caregiver-form';
+import CaregiverTable from '@/components/admin/caregiver-table';
 import EditCaregiverDialog from '@/components/admin/edit-caregiver-dialog';
 
 // Main AdminPage Component
@@ -150,8 +149,7 @@ export default function AdminPage() {
           <TabsTrigger value="manage">간병인 관리</TabsTrigger>
         </TabsList>
         <TabsContent value="register" className="mt-6">
-            {/* <CaregiverForm onSuccess={handleAddSuccess} /> */}
-            <p>간병인 등록 폼 (현재 비활성화됨)</p>
+            <CaregiverForm onSuccess={handleAddSuccess} />
         </TabsContent>
         <TabsContent value="manage" className="mt-6">
           <Card>
@@ -176,17 +174,16 @@ export default function AdminPage() {
                   <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                 </div>
               ) : (
-                // <CaregiverTable 
-                //     caregivers={filteredCaregivers} 
-                //     selectedRowIds={selectedRowIds}
-                //     isDeleting={isDeleting}
-                //     onSelectAll={handleSelectAllRows}
-                //     onSelectRow={handleSelectRow}
-                //     onDeleteSelected={handleDeleteSelectedRows}
-                //     onEditSuccess={handleEditSuccess} 
-                //     onEditRequest={handleEditRequest}
-                // />
-                <p>간병인 목록 (현재 비활성화됨)</p>
+                <CaregiverTable 
+                    caregivers={filteredCaregivers} 
+                    selectedRowIds={selectedRowIds}
+                    isDeleting={isDeleting}
+                    onSelectAll={handleSelectAllRows}
+                    onSelectRow={handleSelectRow}
+                    onDeleteSelected={handleDeleteSelectedRows}
+                    onEditSuccess={handleEditSuccess} 
+                    onEditRequest={handleEditRequest}
+                />
               )}
             </CardContent>
           </Card>
@@ -205,5 +202,3 @@ export default function AdminPage() {
     </div>
   );
 }
-
-    
