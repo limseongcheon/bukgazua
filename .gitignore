@@ -50,3 +50,6 @@ next-env.d.ts
 
 # Custom
 *.pack
+.firebase/
+node_modules/
+*.pack
