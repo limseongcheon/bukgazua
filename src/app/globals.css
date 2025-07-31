@@ -5,61 +5,77 @@
 
 @layer base {
   :root {
-    --background: 222 83% 98%;
+    /* Soft blue for trust and reliability */
+    --primary: 209 98% 76%; /* #77B5FE */
+    --primary-foreground: 222 47% 11%; /* Dark text on primary */
+
+    /* Very light gray for a clean backdrop */
+    --background: 0 0% 96%; /* #F5F5F5 */
     --foreground: 222 47% 11%;
-    --card: 222 83% 98%;
+    
+    --card: 0 0% 100%; /* White cards */
     --card-foreground: 222 47% 11%;
-    --popover: 222 83% 98%;
+    
+    --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 0 84.2% 68.2%;
-    --primary-foreground: 210 40% 98%;
+
+    /* Warm orange for key actions */
+    --accent: 33 100% 64%; /* #FFB347 */
+    --accent-foreground: 222 47% 11%; /* Dark text on accent */
+
     --secondary: 220 15% 90%;
-    --secondary-foreground: 220 15% 30%;
+    --secondary-foreground: 222 47% 11%;
+    
     --muted: 220 15% 96%;
     --muted-foreground: 222 47% 44%;
-    --accent: 210 90% 63%;
-    --accent-foreground: 210 40% 98%;
+    
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
+
     --border: 220 13% 88%;
     --input: 220 13% 88%;
-    --ring: 222 47% 11%;
+    --ring: 209 98% 76%;
+
     --radius: 0.5rem;
 
     /* Custom Claim Theme */
-    --claim-bg: 145 75% 92%;
-    --claim-fg: 145 60% 25%;
+    --claim-bg: 209 98% 96%;
+    --claim-fg: 209 90% 30%;
   }
 
   .dark {
+    /* Keeping a similar feel for dark mode, but adjusting values */
+    --primary: 209 98% 76%;
+    --primary-foreground: 222 47% 11%;
+
     --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 0 84.2% 68.2%;
-    --primary-foreground: 210 40% 98%;
+    --foreground: 0 0% 98%;
+    
+    --card: 222 47% 15%;
+    --card-foreground: 0 0% 98%;
+    
+    --popover: 222 47% 15%;
+    --popover-foreground: 0 0% 98%;
+
+    --accent: 33 100% 64%;
+    --accent-foreground: 222 47% 11%;
+
     --secondary: 220 15% 20%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary-foreground: 0 0% 98%;
+    
     --muted: 220 15% 20%;
     --muted-foreground: 220 15% 65%;
-    --accent: 210 90% 63%;
-    --accent-foreground: 210 40% 98%;
+    
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
+
     --border: 220 15% 30%;
     --input: 220 15% 30%;
-    --ring: 210 40% 98%;
-
+    --ring: 209 98% 76%;
+    
     /* Custom Claim Theme */
-    --claim-bg: 145 50% 25%;
-    --claim-fg: 145 30% 90%;
-  }
-
-  .support-theme {
-    --primary: 145 63% 40%;
-    --primary-foreground: 0 0% 98%;
+    --claim-bg: 209 90% 20%;
+    --claim-fg: 209 98% 90%;
   }
 }
 

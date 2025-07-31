@@ -6,7 +6,7 @@ export default function Hero() {
   return (
     <section className="container grid lg:grid-cols-2 gap-12 items-center py-20 md:py-32">
       <div className="space-y-6 text-center lg:text-left">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter font-headline">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter">
           따뜻한 돌봄, <br />
           <span className="text-primary">완벽한 매칭.</span>
         </h1>

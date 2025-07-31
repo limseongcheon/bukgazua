@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
@@ -7,11 +7,11 @@ import { AppLogo } from '@/components/layout/app-logo';
 
 export default function Header() {
   const navItems = [
-    { href: '/#services', label: '서비스', className: "border-accent text-foreground hover:bg-accent hover:text-accent-foreground" },
-    { href: '/#find-caregiver', label: '간병인 찾기', className: "border-accent text-foreground hover:bg-accent hover:text-accent-foreground" },
-    { href: '/insurance-claim', label: '보험서류 청구', className: "border-accent text-foreground hover:bg-accent hover:text-accent-foreground" },
-    { href: '/inquiry', label: '일반 문의', className: "border-accent text-foreground hover:bg-accent hover:text-accent-foreground" },
-    { href: '/support', label: '간병인 지원', className: "border-destructive text-black hover:bg-destructive hover:text-destructive-foreground" },
+    { href: '/#services', label: '서비스' },
+    { href: '/#find-caregiver', label: '간병인 찾기' },
+    { href: '/insurance-claim', label: '보험서류 청구' },
+    { href: '/inquiry', label: '일반 문의' },
+    { href: '/support', label: '간병인 지원' },
   ];
 
   return (
@@ -21,11 +21,7 @@ export default function Header() {
         
         <nav className="hidden md:flex items-center gap-1">
           {navItems.map((item) => (
-            <Button asChild 
-              variant="outline"
-              className={item.className}
-              key={item.href + item.label}
-            >
+            <Button asChild variant="ghost" className="text-foreground/80 hover:text-foreground hover:bg-muted" key={item.href + item.label}>
               <Link href={item.href}>{item.label}</Link>
             </Button>
           ))}
@@ -52,7 +48,7 @@ export default function Header() {
                     <SheetClose asChild key={item.href + item.label}>
                       <Link
                         href={item.href}
-                        className={cn("inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-muted hover:text-muted-foreground h-10 px-4 py-2", "justify-start text-base", item.className)}
+                        className="text-lg font-medium text-muted-foreground hover:text-foreground"
                         >
                         {item.label}
                       </Link>
