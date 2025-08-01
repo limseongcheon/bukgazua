@@ -3,8 +3,7 @@
 import type { Caregiver } from '@/types/caregiver-types';
 import { unstable_noStore as noStore } from 'next/cache';
 
-// Using a simple in-memory array to simulate the database
-// This removes the sqlite3/better-sqlite3 dependency completely.
+// Using a simple in-memory array to simulate a database and remove native dependencies.
 let caregivers_db: Caregiver[] = [
   {
     id: 1,
