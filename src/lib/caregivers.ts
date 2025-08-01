@@ -4,7 +4,7 @@ import type { Caregiver } from '@/types/caregiver-types';
 import { unstable_noStore as noStore } from 'next/cache';
 
 // Using a simple in-memory array to simulate the database
-// This removes the sqlite3 dependency completely.
+// This removes the sqlite3/better-sqlite3 dependency completely.
 let caregivers_db: Caregiver[] = [
   {
     id: 1,
@@ -38,7 +38,7 @@ let caregivers_db: Caregiver[] = [
 let nextId = caregivers_db.length + 1;
 
 
-type NewCaregiverData = Omit<Caregiver, 'id' | 'unavailableDates'>;
+type NewCaregiverData = Omit<Caregiver, 'id' | 'unavailableDates'> & { specialNotes?: string | null };
 type UpdateCaregiverData = Partial<Omit<Caregiver, 'id'>>;
 
 export async function getCaregivers(): Promise<Caregiver[]> {
