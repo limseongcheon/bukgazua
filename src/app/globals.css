@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -90,4 +89,13 @@
     @apply scroll-smooth;
   }
 }
-    
+
+@layer components {
+    /* Forcing scrollbars to be visible for debugging and ensuring functionality */
+    .force-scrollbar-x {
+        overflow-x: auto !important;
+    }
+    .force-scrollbar-y {
+        overflow-y: auto !important;
+    }
+}
