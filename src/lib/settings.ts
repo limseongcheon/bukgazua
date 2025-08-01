@@ -2,7 +2,7 @@
 import { unstable_noStore as noStore } from 'next/cache';
 
 /**
- * 환경 변수에서 설정된 관리자 이메일 목록을 가져옵니다.
+ * .env 파일 또는 Secret Manager에서 설정된 관리자 이메일 목록을 가져옵니다.
  * CARECONNECT_ADMIN_EMAIL_1 부터 CARECONNECT_ADMIN_EMAIL_5 까지 순차적으로 확인합니다.
  * @returns {Promise<string[]>} 관리자 이메일 주소 배열
  */
