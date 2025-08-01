@@ -5,25 +5,3 @@ runConfig:
   # Increase this value if you'd like to automatically spin up
   # more instances in response to increased traffic.
   maxInstances: 1
-env:
-  # Admin credentials
-  - variable: CARECONNECT_ADMIN_USERNAME
-    value: "admin"
-  - variable: CARECONNECT_ADMIN_PASSWORD
-    secret: CARECONNECT_ADMIN_PASSWORD
-
-  # Resend Email API credentials
-  - variable: CARECONNECT_RESEND_API_KEY
-    secret: CARECONNECT_RESEND_API_KEY
-  - variable: CARECONNECT_EMAIL_FROM
-    value: "onboarding@resend.dev"
-
-  # Admin notification emails
-  - variable: CARECONNECT_ADMIN_EMAIL_1
-    secret: CARECONNECT_ADMIN_EMAIL_1
-
-  # Turso Database credentials
-  - variable: TURSO_DATABASE_URL
-    secret: TURSO_DATABASE_URL
-  - variable: TURSO_AUTH_TOKEN
-    secret: TURSO_AUTH_TOKEN
