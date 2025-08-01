@@ -16,3 +16,18 @@ env:
     secret: CARECONNECT_ADMIN_PASSWORD
     availability:
       - RUNTIME
+
+  - variable: CARECONNECT_RESEND_API_KEY
+    secret: CARECONNECT_RESEND_API_KEY
+    availability:
+      - RUNTIME
+
+  - variable: CARECONNECT_EMAIL_FROM
+    secret: CARECONNECT_EMAIL_FROM
+    availability:
+      - RUNTIME
+
+  - variable: CARECONNECT_ADMIN_EMAIL_1
+    secret: CARECONNECT_ADMIN_EMAIL_1
+    availability:
+      - RUNTIME
