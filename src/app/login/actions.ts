@@ -21,7 +21,7 @@ export async function login(prevState: any, formData: FormData) {
 
     const { username, password } = parsed.data;
     
-    // This will read from .env on local, and from apphosting.yaml on production
+    // This will read from .env.local on local, and from apphosting.yaml on production
     const adminUsername = process.env.CARECONNECT_ADMIN_USERNAME;
     const adminPassword = process.env.CARECONNECT_ADMIN_PASSWORD;
 
@@ -31,6 +31,8 @@ export async function login(prevState: any, formData: FormData) {
     }
 
     if (username !== adminUsername || password !== adminPassword) {
+      // Add a server-side log for easier debugging, without exposing sensitive info.
+      console.log(`Login attempt failed for user: ${username}. Credentials match: ${username === adminUsername}, ${password === adminPassword}`);
       return { error: '아이디 또는 비밀번호가 잘못되었습니다.' };
     }
     

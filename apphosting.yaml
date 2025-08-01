@@ -8,11 +8,11 @@ runConfig:
 
 env:
   - variable: CARECONNECT_ADMIN_USERNAME
-    value: "admin"
+    secret: CARECONNECT_ADMIN_USERNAME
     availability:
       - RUNTIME
 
   - variable: CARECONNECT_ADMIN_PASSWORD
-    value: "password"
+    secret: CARECONNECT_ADMIN_PASSWORD
     availability:
       - RUNTIME
