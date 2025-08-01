@@ -1,9 +1,10 @@
-
 'use server';
 
 import type { Caregiver } from '@/types/caregiver-types';
 import { unstable_noStore as noStore } from 'next/cache';
 
+// K2's suggestion: Use a simple in-memory array to simulate the database
+// This completely removes the sqlite3 dependency for this test.
 let caregivers_db: Caregiver[] = [
   {
     id: 1,
@@ -36,7 +37,7 @@ let caregivers_db: Caregiver[] = [
 ];
 let sequence = caregivers_db.length + 1;
 
-type NewCaregiverData = Omit<Caregiver, 'id' | 'unavailableDates'>;
+type NewCaregiverData = Omit<Caregiver, 'id' | 'unavailableDates'> & { specialNotes?: string | null };
 type UpdateCaregiverData = Partial<Omit<Caregiver, 'id'>>;
 
 export async function getCaregivers(): Promise<Caregiver[]> {
