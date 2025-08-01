@@ -31,3 +31,8 @@ env:
     secret: CARECONNECT_ADMIN_EMAIL_1
     availability:
       - RUNTIME
+
+  - variable: CARECONNECT_ADMIN_EMAIL_2
+    secret: CARECONNECT_ADMIN_EMAIL_2
+    availability:
+      - RUNTIME
