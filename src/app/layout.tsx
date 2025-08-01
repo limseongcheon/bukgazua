@@ -27,12 +27,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <body className={cn("antialiased font-sans", ptSans.variable)}>
-        <div className="flex flex-col min-h-screen">
-          <Header />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </div>
+      <body className={cn("flex flex-col min-h-screen antialiased font-sans", ptSans.variable)}>
+        <Header />
+        <main className="flex-grow">{children}</main>
+        <Footer />
         <Toaster />
       </body>
     </html>
