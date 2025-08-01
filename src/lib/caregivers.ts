@@ -3,8 +3,8 @@
 import type { Caregiver } from '@/types/caregiver-types';
 import { unstable_noStore as noStore } from 'next/cache';
 
-// K2's suggestion: Use a simple in-memory array to simulate the database
-// This completely removes the sqlite3 dependency for this test.
+// Using a simple in-memory array to simulate the database
+// This removes the sqlite3 dependency completely.
 let caregivers_db: Caregiver[] = [
   {
     id: 1,
@@ -37,6 +37,7 @@ let caregivers_db: Caregiver[] = [
 ];
 let sequence = caregivers_db.length + 1;
 
+
 type NewCaregiverData = Omit<Caregiver, 'id' | 'unavailableDates'> & { specialNotes?: string | null };
 type UpdateCaregiverData = Partial<Omit<Caregiver, 'id'>>;
 
@@ -46,47 +47,54 @@ export async function getCaregivers(): Promise<Caregiver[]> {
   return [...caregivers_db].sort((a, b) => b.id - a.id);
 }
 
-export async function addCaregiverToDb(
-  caregiverData: NewCaregiverData
-): Promise<Caregiver> {
-  noStore();
-  if (caregivers_db.some((c) => c.phone === caregiverData.phone)) {
-    throw new Error('이미 등록된 전화번호입니다.');
-  }
+export async function addCaregiverToDb(caregiverData: NewCaregiverData): Promise<Caregiver> {
+    noStore();
+    const { name, phone, photoUrl, birthDate, gender, certifications, experience, status, specialNotes } = caregiverData;
+    
+    if (caregivers_db.some((c) => c.phone === phone)) {
+      throw new Error('이미 등록된 전화번호입니다.');
+    }
 
-  const newCaregiver: Caregiver = {
-    ...caregiverData,
-    id: sequence++,
-    unavailableDates: [],
-  };
+    const newCaregiver: Caregiver = {
+        id: sequence++,
+        name,
+        phone,
+        photoUrl: photoUrl || undefined,
+        birthDate,
+        gender,
+        certifications: certifications || undefined,
+        experience: experience || undefined,
+        status,
+        specialNotes: specialNotes || undefined,
+        unavailableDates: [],
+    };
 
-  caregivers_db.push(newCaregiver);
-  return newCaregiver;
+    caregivers_db.push(newCaregiver);
+    return newCaregiver;
 }
 
-export async function updateCaregiverInDb(
-  id: number,
-  updateData: UpdateCaregiverData
-): Promise<Caregiver> {
-  noStore();
-  const caregiverIndex = caregivers_db.findIndex((c) => c.id === id);
 
-  if (caregiverIndex === -1) {
-    throw new Error('해당 ID의 간병인을 찾을 수 없습니다.');
-  }
+export async function updateCaregiverInDb(id: number, updateData: UpdateCaregiverData): Promise<Caregiver> {
+    noStore();
+    const caregiverIndex = caregivers_db.findIndex((c) => c.id === id);
 
-  const updatedCaregiver = {
-    ...caregivers_db[caregiverIndex],
-    ...updateData,
-  };
+    if (caregiverIndex === -1) {
+        throw new Error('해당 ID의 간병인을 찾을 수 없습니다.');
+    }
+    
+    const updatedCaregiver = {
+        ...caregivers_db[caregiverIndex],
+        ...updateData,
+    };
 
-  caregivers_db[caregiverIndex] = updatedCaregiver;
-  return updatedCaregiver;
+    caregivers_db[caregiverIndex] = updatedCaregiver;
+    return updatedCaregiver;
 }
+
 
 export async function deleteCaregiversFromDb(ids: number[]): Promise<number> {
-  noStore();
-  const initialLength = caregivers_db.length;
-  caregivers_db = caregivers_db.filter((c) => !ids.includes(c.id));
-  return initialLength - caregivers_db.length;
+    noStore();
+    const initialLength = caregivers_db.length;
+    caregivers_db = caregivers_db.filter((c) => !ids.includes(c.id));
+    return initialLength - caregivers_db.length;
 }
