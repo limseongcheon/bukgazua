@@ -2,30 +2,25 @@
 
 import { useEffect, useState, useMemo, useRef, FormEvent, useCallback } from 'react';
 import React from 'react';
-import Image from 'next/image';
-import { format, addDays, differenceInDays, startOfDay } from 'date-fns';
+import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import type { Caregiver } from '@/types/caregiver-types';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import LogoutButton from '@/components/admin/logout-button';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Calendar as CalendarIcon, Trash2, Pencil, X, Info, Search } from 'lucide-react';
+import { Loader2, Calendar as CalendarIcon, Search } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Checkbox } from '@/components/ui/checkbox';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import CaregiverStatusSelect from '@/components/admin/caregiver-status-select';
+import { Dialog } from '@/components/ui/dialog';
+
+// Import the new LogoutButton
+import LogoutButton from '@/components/admin/logout-button';
 import CaregiverForm from '@/components/admin/caregiver-form';
 import CaregiverTable from '@/components/admin/caregiver-table';
 import EditCaregiverDialog from '@/components/admin/edit-caregiver-dialog';

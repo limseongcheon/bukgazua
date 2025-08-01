@@ -1,6 +1,5 @@
 'use server';
 
-import 'dotenv/config'; // .env 파일을 명시적으로 로드합니다.
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
@@ -22,15 +21,16 @@ export async function login(prevState: any, formData: FormData) {
 
     const { username, password } = parsed.data;
     
+    // This will read from .env on local, and from apphosting.yaml on production
     const adminUsername = process.env.CARECONNECT_ADMIN_USERNAME;
     const adminPassword = process.env.CARECONNECT_ADMIN_PASSWORD;
 
     if (!adminUsername || !adminPassword) {
-      return { error: '서버에 관리자 정보가 설정되지 않았습니다. .env 파일을 확인해주세요.' };
+      console.error('Admin credentials are not set in the environment.');
+      return { error: '서버에 관리자 정보가 설정되지 않았습니다. 관리자에게 문의하세요.' };
     }
 
     if (username !== adminUsername || password !== adminPassword) {
-      console.log(`Login failed. Input: '${username}', Expected: '${adminUsername}'`);
       return { error: '아이디 또는 비밀번호가 잘못되었습니다.' };
     }
     
@@ -45,12 +45,9 @@ export async function login(prevState: any, formData: FormData) {
 
   } catch (error) {
     console.error('Login action failed:', error);
-    if (error instanceof Error && error.message.includes('cookies')) {
-        return { error: '세션 설정에 실패했습니다. 서버 환경을 확인해주세요.'};
-    }
     return { error: '로그인 중 알 수 없는 오류가 발생했습니다.' };
   }
-  // This must be called outside of the try/catch block.
+  
   redirect('/admin');
 }
 
