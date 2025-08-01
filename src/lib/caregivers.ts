@@ -1,3 +1,4 @@
+
 'use server';
 
 import type { Caregiver } from '@/types/caregiver-types';
@@ -35,10 +36,10 @@ let caregivers_db: Caregiver[] = [
     specialNotes: '여성 환자 및 수술 후 회복 환자 케어에 강점이 있습니다.',
   },
 ];
-let sequence = caregivers_db.length + 1;
+let nextId = caregivers_db.length + 1;
 
 
-type NewCaregiverData = Omit<Caregiver, 'id' | 'unavailableDates'> & { specialNotes?: string | null };
+type NewCaregiverData = Omit<Caregiver, 'id' | 'unavailableDates'>;
 type UpdateCaregiverData = Partial<Omit<Caregiver, 'id'>>;
 
 export async function getCaregivers(): Promise<Caregiver[]> {
@@ -56,7 +57,7 @@ export async function addCaregiverToDb(caregiverData: NewCaregiverData): Promise
     }
 
     const newCaregiver: Caregiver = {
-        id: sequence++,
+        id: nextId++,
         name,
         phone,
         photoUrl: photoUrl || undefined,
@@ -64,7 +65,7 @@ export async function addCaregiverToDb(caregiverData: NewCaregiverData): Promise
         gender,
         certifications: certifications || undefined,
         experience: experience || undefined,
-        status,
+        status: status || '가능',
         specialNotes: specialNotes || undefined,
         unavailableDates: [],
     };
