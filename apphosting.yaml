@@ -41,3 +41,4 @@ env:
     secret: CARECONNECT_ADMIN_EMAIL_3
     availability:
       - RUNTIME
+
