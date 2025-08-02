@@ -28,4 +28,3 @@ jobs:
           # The service account is specified in the 'permissions' section above.
           # The action will automatically use it for authentication.
           # We no longer need to pass firebaseServiceAccount.
-
