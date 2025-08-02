@@ -14,7 +14,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: read
-      id-token: write # Required for OIDC authentication
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4
@@ -26,9 +26,8 @@ jobs:
           service_account: 'firebase-app-hosting-compute@careconnect-app.iam.gserviceaccount.com'
 
       - run: npm ci && npm run build
-      
+
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           projectId: careconnect-app
-          serviceAccount: firebase-app-hosting-compute@careconnect-app.iam.gserviceaccount.com
