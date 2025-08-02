@@ -8,36 +8,36 @@ runConfig:
 
 env:
   - variable: CARECONNECT_ADMIN_USERNAME
-    secret: CARECONNECT_ADMIN_USERNAME
+    value: "admin"
     availability:
       - RUNTIME
 
   - variable: CARECONNECT_ADMIN_PASSWORD
-    secret: CARECONNECT_ADMIN_PASSWORD
+    value: "password"
     availability:
       - RUNTIME
 
   - variable: CARECONNECT_RESEND_API_KEY
-    secret: CARECONNECT_RESEND_API_KEY
+    value: "YOUR_RESEND_API_KEY_HERE"
     availability:
       - RUNTIME
 
   - variable: CARECONNECT_EMAIL_FROM
-    secret: CARECONNECT_EMAIL_FROM
+    value: "YOUR_SENDER_EMAIL_HERE"
     availability:
       - RUNTIME
 
   - variable: CARECONNECT_ADMIN_EMAIL_1
-    secret: CARECONNECT_ADMIN_EMAIL_1
+    value: "YOUR_ADMIN_EMAIL_1_HERE"
     availability:
       - RUNTIME
 
   - variable: CARECONNECT_ADMIN_EMAIL_2
-    secret: CARECONNECT_ADMIN_EMAIL_2
+    value: "YOUR_ADMIN_EMAIL_2_HERE"
     availability:
       - RUNTIME
 
   - variable: CARECONNECT_ADMIN_EMAIL_3
-    secret: CARECONNECT_ADMIN_EMAIL_3
+    value: "YOUR_ADMIN_EMAIL_3_HERE"
     availability:
       - RUNTIME
