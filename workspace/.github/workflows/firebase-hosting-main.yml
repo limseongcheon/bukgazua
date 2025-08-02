@@ -6,24 +6,29 @@ name: Deploy to Firebase App Hosting
   push:
     branches:
       - main
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    # Firebase App Hosting action uses a service account for auth.
-    # The permissions for this service account are set in the Google Cloud console.
-    # For this project, the service account is:
-    # firebase-app-hosting-db-srv@careconnect-app.iam.gserviceaccount.com
+
     permissions:
       contents: read
       pull-requests: read
-      id-token: write # Required for authentication
+      id-token: write # Required for OIDC authentication
+
     steps:
       - uses: actions/checkout@v4
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: 'projects/783936695295/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider'
+          service_account: 'firebase-app-hosting-compute@careconnect-app.iam.gserviceaccount.com'
+
       - run: npm ci && npm run build
+      
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
           projectId: careconnect-app
-          # The service account is specified in the 'permissions' section above.
-          # The action will automatically use it for authentication.
-          # We no longer need to pass firebaseServiceAccount.
+          serviceAccount: firebase-app-hosting-compute@careconnect-app.iam.gserviceaccount.com
