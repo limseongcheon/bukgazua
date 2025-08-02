@@ -1,4 +1,3 @@
-
 import Database from 'better-sqlite3';
 import type { Caregiver } from '@/types/caregiver-types';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -169,5 +168,3 @@ export async function deleteCaregiversFromDb(ids: number[]): Promise<number> {
     const info = stmt.run(...ids);
     return info.changes;
 }
-
-    
