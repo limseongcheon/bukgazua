@@ -23,3 +23,5 @@ jobs:
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           projectId: careconnect-app
+          # The service account that the action will use to deploy.
+          serviceAccount: firebase-app-hosting-compute@angels-touch-e1lwx.iam.gserviceaccount.com
