@@ -14,6 +14,15 @@ const dbPath = process.env.NODE_ENV === 'production'
 
 console.log(`[DB] Database path: ${dbPath}`);
 
+// For production, ensure the /tmp directory exists before initializing the database
+if (process.env.NODE_ENV === 'production') {
+  const dir = path.dirname(dbPath);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+    console.log(`[DB] Created directory: ${dir}`);
+  }
+}
+
 const db = new Database(dbPath);
 
 // 테이블 초기화 로직
@@ -160,3 +169,5 @@ export async function deleteCaregiversFromDb(ids: number[]): Promise<number> {
     const info = stmt.run(...ids);
     return info.changes;
 }
+
+    
