@@ -23,7 +23,7 @@ jobs:
         uses: 'google-github-actions/auth@v2'
         with:
           workload_identity_provider: 'projects/783936695295/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider'
-          service_account: 'firebase-app-hosting-compute@angels-touch-e1lwx.iam.gserviceaccount.com'
+          service_account: 'firebase-app-hosting-compute@careconnect-app.iam.gserviceaccount.com'
 
       - run: npm ci && npm run build
       
@@ -31,4 +31,4 @@ jobs:
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           projectId: careconnect-app
-          serviceAccount: firebase-app-hosting-compute@angels-touch-e1lwx.iam.gserviceaccount.com
+          serviceAccount: firebase-app-hosting-compute@careconnect-app.iam.gserviceaccount.com
