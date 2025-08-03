@@ -19,18 +19,18 @@ jobs:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
           service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
 
-      # ✅ 최신 SDK + App Hosting 컴포넌트 설치
       - uses: google-github-actions/setup-gcloud@v2
         with:
           version: latest
-          install_components: beta,apphosting
+          install_components: 'beta'
 
       - run: npm ci
       - run: npm run build
 
-      # ✅ 백엔드명, 프로젝트, region 모두 맞춤
-      - run: |
-          gcloud beta apphosting backends deploy bukgazua \
+      - name: Deploy to Cloud Run (App Hosting backend)
+        run: |
+          gcloud run deploy bukgazua \
+            --source . \
             --project=angels-touch-e1lwx \
             --region=asia-east1 \
-            --source .
+            --allow-unauthenticated
