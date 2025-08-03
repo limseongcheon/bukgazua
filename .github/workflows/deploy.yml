@@ -36,5 +36,5 @@ jobs:
         run: |
           gcloud beta apphosting backends deploy live \
             --project=angels-touch-e1lwx \
-            --region=us-central1 \
+            --region=asia-east1 \
             --source .
