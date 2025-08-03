@@ -16,7 +16,7 @@ jobs:
       - uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: projects/675534587038/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
-          service_account: firebase-app-hosting-compute@careconnect-app.iam.gserviceaccount.com
+          service_account: firebase-app-hosting-compute@angels-touch-e1lwx.iam.gserviceaccount.com
 
       - name: Install dependencies and build
         run: |
@@ -24,6 +24,6 @@ jobs:
           npm run build
 
       - name: Deploy to Firebase App Hosting
-        run: npx firebase-tools@latest hosting:channel:deploy live --project=careconnect-app
+        run: npx firebase-tools@latest hosting:channel:deploy live --project=angels-touch-e1lwx
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ""
