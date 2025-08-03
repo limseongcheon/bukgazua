@@ -24,3 +24,4 @@ jobs:
 
       - name: Deploy to Firebase App Hosting
         run: npx firebase-tools hosting:channel:deploy live --project=careconnect-app
+
