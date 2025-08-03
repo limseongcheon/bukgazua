@@ -17,9 +17,8 @@ jobs:
         with:
           workload_identity_provider: projects/675534587038/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
           service_account: firebase-app-hosting-compute@careconnect-app.iam.gserviceaccount.com
-      - run: npm ci && npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - run: npm ci
+      - run: npm run build
+      - uses: FirebaseExtended/action-apphosting-deploy@v0
         with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CARECONNECT_APP }}
           projectId: careconnect-app
