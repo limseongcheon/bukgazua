@@ -23,6 +23,8 @@ jobs:
           npm run build
 
       - name: Deploy to Firebase App Hosting
-        run: npx firebase-tools hosting:channel:deploy live --project=careconnect-app
+        run: npx firebase-tools hosting:channel:deploy live --project=angels-touch-e1lwx
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ""
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: ""
+          FIREBASE_CLI_EXPERIMENTS: "serviceAccountImpersonation"
