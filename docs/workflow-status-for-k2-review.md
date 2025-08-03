@@ -1,4 +1,3 @@
-
 # 워크플로우 상태 검토 요청 (K2님 문의용)
 
 현재 두 개의 배포 워크플로우 파일이 GitHub Actions에서 계속 실패하고 있습니다.
@@ -28,8 +27,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: projects/675534587038/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
-          service_account: firebase-app-hosting-compute@careconnect-app.iam.gserviceaccount.com
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
       
       - name: Install dependencies and build
         run: |
@@ -37,7 +36,7 @@ jobs:
           npm run build
       
       - name: Deploy to Firebase App Hosting
-        run: npx firebase-tools hosting:channel:deploy live --project=careconnect-app --json
+        run: npx firebase-tools hosting:channel:deploy live
 ```
 
 ---
@@ -45,6 +44,9 @@ jobs:
 ## 2. `.github/workflows/firebase-hosting-main.yml`
 
 ```yml
+# This file is identical to deploy.yml and can likely be removed later.
+# It is included here for completeness of the current state.
+
 name: Deploy to Firebase App Hosting
 on:
   push:
@@ -62,8 +64,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: projects/675534587038/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
-          service_account: firebase-app-hosting-compute@careconnect-app.iam.gserviceaccount.com
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
 
       - name: Install dependencies and build
         run: |
@@ -71,5 +73,19 @@ jobs:
           npm run build
 
       - name: Deploy to Firebase App Hosting
-        run: npx firebase-tools hosting:channel:deploy live --project=careconnect-app --json
+        run: npx firebase-tools hosting:channel:deploy live
+```
+
+---
+
+## 3. `.firebaserc`
+
+이 파일은 `npx firebase-tools` 명령어가 `--project` 플래그 없이도 올바른 Firebase 프로젝트(`angels-touch-e1lwx`)를 인식하도록 만들어줍니다.
+
+```json
+{
+  "projects": {
+    "default": "angels-touch-e1lwx"
+  }
+}
 ```
