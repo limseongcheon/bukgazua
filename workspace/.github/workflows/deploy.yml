@@ -17,7 +17,7 @@ jobs:
           workload_identity_provider: projects/675534587038/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
           service_account: firebase-app-hosting-compute@careconnect-app.iam.gserviceaccount.com
 
-      - name: Install dependencies and build
+      - name: Install & build
         run: |
           npm ci
           npm run build
