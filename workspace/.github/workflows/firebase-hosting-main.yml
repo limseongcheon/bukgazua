@@ -24,4 +24,9 @@ jobs:
           npm run build
 
       - name: Deploy to Firebase App Hosting
-        run: npx firebase-tools hosting:channel:deploy live --project=careconnect-app --json
+        run: |
+          npx firebase-tools@latest hosting:channel:deploy live \
+            --project=careconnect-app \
+            --json
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ""

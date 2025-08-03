@@ -1,8 +1,7 @@
 name: Deploy to Firebase App Hosting
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   build_and_deploy:
@@ -17,11 +16,16 @@ jobs:
         with:
           workload_identity_provider: projects/675534587038/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
           service_account: firebase-app-hosting-compute@careconnect-app.iam.gserviceaccount.com
-      
+
       - name: Install dependencies and build
         run: |
           npm ci
           npm run build
-      
+
       - name: Deploy to Firebase App Hosting
-        run: npx firebase-tools hosting:channel:deploy live --project=careconnect-app --json
+        run: |
+          npx firebase-tools@latest hosting:channel:deploy live \
+            --project=careconnect-app \
+            --json
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ""
