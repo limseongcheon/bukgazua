@@ -1,5 +1,4 @@
 name: Deploy to Firebase App Hosting
-
 on:
   push:
     branches: [main]
@@ -9,33 +8,28 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write   # OIDC 필수
+      id-token: write
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
+      - uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
           service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
 
-      - name: Setup gcloud with App Hosting
-        uses: google-github-actions/setup-gcloud@v2
+      - uses: google-github-actions/setup-gcloud@v2
         with:
           version: latest
-          install_components: 'beta,apphosting'
+          install_components: 'beta'
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
+      - run: npm run build
 
-      - name: Build project
-        run: npm run build
-
-      - name: Deploy to Firebase App Hosting
+      - name: Deploy to Cloud Run (App Hosting backend)
         run: |
-          gcloud beta apphosting backends deploy bukgazua \
+          gcloud run deploy bukgazua \
+            --source . \
             --project=angels-touch-e1lwx \
             --region=asia-east1 \
-            --source .
+            --allow-unauthenticated
