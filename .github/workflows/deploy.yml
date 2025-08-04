@@ -34,3 +34,4 @@ jobs:
             --project=angels-touch-e1lwx \
             --region=asia-east1 \
             --allow-unauthenticated
+            --quiet
