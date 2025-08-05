@@ -37,4 +37,5 @@ jobs:
             --project=angels-touch-e1lwx \
             --region=asia-east1 \
             --allow-unauthenticated \
+            --service-account=github-deployer@angels-touch-e1lwx.iam.gserviceaccount.com \
             --quiet
