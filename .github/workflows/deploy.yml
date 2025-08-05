@@ -1,4 +1,3 @@
-
 name: Deploy to Firebase App Hosting
 on:
   push:
@@ -14,18 +13,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: google-github-actions/auth@v2
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
           service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
 
-      - uses: google-github-actions/setup-gcloud@v2
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
         with:
-          version: latest
-          install_components: 'beta'
+          version: 'latest'
 
-      - run: npm ci
-      - run: npm run build
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
 
       - name: Deploy to Cloud Run (App Hosting backend)
         run: |
@@ -33,5 +36,6 @@ jobs:
             --source . \
             --project=angels-touch-e1lwx \
             --region=asia-east1 \
-            --allow-unauthenticated
+            --allow-unauthenticated \
+            --service-account=github-deployer@angels-touch-e1lwx.iam.gserviceaccount.com \
             --quiet
