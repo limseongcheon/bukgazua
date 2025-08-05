@@ -30,12 +30,11 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Deploy to Cloud Run (App Hosting backend)
+      - name: Deploy to Cloud Run
         run: |
           gcloud run deploy bukgazua \
             --source . \
             --project=angels-touch-e1lwx \
             --region=asia-east1 \
             --allow-unauthenticated \
-            --service-account=github-deployer@angels-touch-e1lwx.iam.gserviceaccount.com \
-            --quiet
+            --build-service-account=cb-bukgazua@angels-touch-e1lwx.iam.gserviceaccount.com
